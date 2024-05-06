@@ -18,11 +18,19 @@ namespace CsvTool
         {
             _count = count;
             InitializeComponent();
-            Load();
+            LblColCount.Text += _count.ToString();
         }
-        void Load()
+        public string[] NewCols;
+        private void BtnSave_Click(object sender, EventArgs e)
         {
-            LblColCount.Text+=_count.ToString();
+            NewCols = TxtNewColNames.Text.Split(',');
+            if (NewCols.Length > _count)
+            {
+                MessageBox.Show("You have entered more column names than the number of columns in the CSV file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            NewCols = NewCols.Take(_count).ToArray();
+            Close();
         }
     }
 }

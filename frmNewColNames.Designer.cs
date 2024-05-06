@@ -51,6 +51,7 @@
             BtnSave.Size = new Size(240, 34);
             BtnSave.TabIndex = 1;
             BtnSave.Text = "Save";
+            BtnSave.Click += BtnSave_Click;
             // 
             // LblInformation
             // 

@@ -45,16 +45,18 @@ namespace CsvTool
             txtExportPath = new DevExpress.XtraEditors.TextEdit();
             labelControl2 = new DevExpress.XtraEditors.LabelControl();
             BtnSetColNames = new DevExpress.XtraEditors.SimpleButton();
+            ChboxColsAvailable = new DevExpress.XtraEditors.CheckEdit();
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).BeginInit();
             Layout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtTableName.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ChboxColsAvailable.Properties).BeginInit();
             SuspendLayout();
             // 
             // lblrowcount
             // 
             lblrowcount.AutoSize = true;
-            lblrowcount.Location = new Point(12, 310);
+            lblrowcount.Location = new Point(12, 338);
             lblrowcount.Name = "lblrowcount";
             lblrowcount.Size = new Size(57, 13);
             lblrowcount.TabIndex = 0;
@@ -62,7 +64,7 @@ namespace CsvTool
             // 
             // txtDelimiter
             // 
-            txtDelimiter.Location = new Point(123, 3);
+            txtDelimiter.Location = new Point(140, 3);
             txtDelimiter.Name = "txtDelimiter";
             txtDelimiter.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.RegExpMaskManager));
             txtDelimiter.Properties.MaskSettings.Set("MaskManagerSignature", "isOptimistic=False");
@@ -101,7 +103,7 @@ namespace CsvTool
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            Layout.Size = new Size(263, 156);
+            Layout.Size = new Size(302, 156);
             Layout.TabIndex = 3;
             // 
             // labelControl1
@@ -126,7 +128,7 @@ namespace CsvTool
             // 
             chlistOutput.FormattingEnabled = true;
             chlistOutput.Items.AddRange(new object[] { "Mongo", "Sql", "Model" });
-            chlistOutput.Location = new Point(123, 24);
+            chlistOutput.Location = new Point(140, 24);
             chlistOutput.Name = "chlistOutput";
             chlistOutput.Size = new Size(137, 52);
             chlistOutput.TabIndex = 4;
@@ -143,7 +145,7 @@ namespace CsvTool
             // btnSelectPath
             // 
             btnSelectPath.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("btnSelectPath.ImageOptions.SvgImage");
-            btnSelectPath.Location = new Point(123, 125);
+            btnSelectPath.Location = new Point(140, 125);
             btnSelectPath.Name = "btnSelectPath";
             btnSelectPath.RightToLeft = RightToLeft.Yes;
             btnSelectPath.Size = new Size(137, 28);
@@ -153,7 +155,7 @@ namespace CsvTool
             // 
             // txtTableName
             // 
-            txtTableName.Location = new Point(123, 90);
+            txtTableName.Location = new Point(140, 90);
             txtTableName.Name = "txtTableName";
             txtTableName.Size = new Size(137, 20);
             txtTableName.TabIndex = 9;
@@ -162,10 +164,10 @@ namespace CsvTool
             // 
             BtnSave.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
-            BtnSave.Location = new Point(9, 275);
+            BtnSave.Location = new Point(9, 303);
             BtnSave.Name = "BtnSave";
             BtnSave.RightToLeft = RightToLeft.Yes;
-            BtnSave.Size = new Size(266, 32);
+            BtnSave.Size = new Size(305, 32);
             BtnSave.TabIndex = 7;
             BtnSave.Text = "Save";
             BtnSave.Click += BtnSave_Click;
@@ -175,7 +177,7 @@ namespace CsvTool
             txtExportPath.Enabled = false;
             txtExportPath.Location = new Point(12, 194);
             txtExportPath.Name = "txtExportPath";
-            txtExportPath.Size = new Size(260, 20);
+            txtExportPath.Size = new Size(302, 20);
             txtExportPath.TabIndex = 10;
             // 
             // labelControl2
@@ -191,19 +193,29 @@ namespace CsvTool
             // 
             BtnSetColNames.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSetColNames.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSetColNames.ImageOptions.SvgImage");
-            BtnSetColNames.Location = new Point(9, 220);
+            BtnSetColNames.Location = new Point(9, 263);
             BtnSetColNames.Name = "BtnSetColNames";
             BtnSetColNames.RightToLeft = RightToLeft.Yes;
-            BtnSetColNames.Size = new Size(266, 32);
+            BtnSetColNames.Size = new Size(305, 32);
             BtnSetColNames.TabIndex = 12;
             BtnSetColNames.Text = "Set new Column names manually";
             BtnSetColNames.Click += BtnSetColNames_Click;
+            // 
+            // ChboxColsAvailable
+            // 
+            ChboxColsAvailable.EditValue = true;
+            ChboxColsAvailable.Location = new Point(9, 220);
+            ChboxColsAvailable.Name = "ChboxColsAvailable";
+            ChboxColsAvailable.Properties.Caption = "Are the column names available in the first row of the csv?";
+            ChboxColsAvailable.Size = new Size(325, 20);
+            ChboxColsAvailable.TabIndex = 13;
             // 
             // frmConfiguration
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(287, 359);
+            ClientSize = new Size(326, 359);
+            Controls.Add(ChboxColsAvailable);
             Controls.Add(BtnSetColNames);
             Controls.Add(labelControl2);
             Controls.Add(txtExportPath);
@@ -222,6 +234,7 @@ namespace CsvTool
             Layout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)txtTableName.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ChboxColsAvailable.Properties).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -242,5 +255,6 @@ namespace CsvTool
         private DevExpress.XtraEditors.TextEdit txtExportPath;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.SimpleButton BtnSetColNames;
+        private DevExpress.XtraEditors.CheckEdit ChboxColsAvailable;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraSplashScreen;
+using DevExpress.XtraWaitForm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,11 +23,10 @@ namespace CsvTool
             InitializeComponent();
         }
         string filePath;
-        string[] headers;
+        private static string[] headers;
         string[] cols;
         char delimiter;
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
         Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
 
@@ -36,9 +37,14 @@ namespace CsvTool
                 char.TryParse(txtDelimiter.Text, out delimiter);
                 using (StreamReader sr = new StreamReader(filePath))
                 {
-                    //Eğer ilk veride column nameleri yoksa ilk veriyi column name olarak atar.
-                    headers = sr.ReadLine().Split(delimiter);
-
+                    if (ChboxColsAvailable.Checked)
+                    {
+                        headers = sr.ReadLine().Split(delimiter);
+                    }
+                    //else
+                    //{
+                    //    headers = frm.NewCols;
+                    //}
                     foreach (string header in headers)
                     {
                         valtypes.Add(header.Trim(), typeof(string));
@@ -55,7 +61,7 @@ namespace CsvTool
                             {
                                 rowData.Add(headers[i].Trim(), cols[i].Trim());
 
-                                // Veri tipini güncelle
+                                // Veri tipini günceller
                                 Type valueType = DetermineValueType(cols[i].Trim());
                                 if (valueType != valtypes[headers[i].Trim()])
                                 {
@@ -79,6 +85,63 @@ namespace CsvTool
             }
 
             lblrowcount.Text = dataList.Count().ToString();
+        }
+        void LoadForNewCols()
+        {
+            try
+            {
+                char.TryParse(txtDelimiter.Text, out delimiter);
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    headers = sr.ReadLine().Split(delimiter);
+
+                    foreach (string header in headers)
+                    {
+                        valtypes.Add(header.Trim(), typeof(string));
+                    }
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        cols = line.Split(delimiter);
+                        Dictionary<string, string> rowData = new Dictionary<string, string>();
+
+                        for (int i = 0; i < headers.Length; i++)
+                        {
+                            if (i < cols.Length)
+                            {
+                                rowData.Add(headers[i].Trim(), cols[i].Trim());
+
+                                Type valueType = DetermineValueType(cols[i].Trim());
+                                if (valueType != valtypes[headers[i].Trim()])
+                                {
+                                    valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
+                                }
+                            }
+                            else
+                            {
+                                rowData.Add(headers[i].Trim(), "");
+                            }
+                        }
+
+                        dataList.Add(rowData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+            lblrowcount.Text = dataList.Count().ToString();
+        }
+
+        public static void StartWork()
+        {
+            SplashScreenManager.ShowForm(Form.ActiveForm, typeof(frmLoad), true, true, false);
+        }
+        public static void EndWork()
+        {
+            SplashScreenManager.CloseForm(false);
         }
         private Type GetCommonType(Type type1, Type type2)
         {
@@ -207,10 +270,39 @@ namespace CsvTool
         }
         void MongoSelected()
         {
-            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewSql.txt");
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewMongo.txt");
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 writer.WriteLine($"db.getCollection(\"{txtTableName.Text}\").insert([");
+
+                bool isFirstRow = true;
+                foreach (var rowData in dataList)
+                {
+                    if (isFirstRow)
+                    {
+                        writer.Write("{ ");
+                        isFirstRow = false;
+                    }
+                    else
+                    {
+                        writer.Write(", { ");
+                    }
+
+                    int i = 0;
+                    foreach (var header in headers)
+                    {
+                        i++;
+                        string value = rowData.ContainsKey(header) ? rowData[header] : "null";
+                        writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
+                        if (i < headers.Length)
+                        {
+                            writer.Write(", ");
+                        }
+                    }
+                    writer.Write(" }");
+                }
+
+                writer.WriteLine("]);");
             }
         }
         private void btnSelectPath_Click(object sender, EventArgs e)
@@ -232,8 +324,13 @@ namespace CsvTool
                 MessageBox.Show("Delimiter Cannot Be Empty","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            if (txtDelimiter.Text.Length >= 2)
+            {
+                MessageBox.Show("The Delimiter Can Consist Of Up To 1 Character","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+            StartWork();
             LoadCsvData();
-
             foreach (int index in chlistOutput.CheckedIndices)
             {
                 string selectedItem = chlistOutput.Items[index].ToString();
@@ -253,12 +350,17 @@ namespace CsvTool
 
                 selectedIndices.Add(index);
             }
+            EndWork();
             MessageBox.Show($"File Saved To \n{txtExportPath.Text}","Success",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
+
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
-            int headercount=headers.Count();
-            frmNewColNames frm = new frmNewColNames(headercount);//Henüz yapılmadı
+            StartWork();
+            LoadForNewCols();
+            EndWork();
+            int headercount = headers.Count();
+            frmNewColNames frm = new frmNewColNames(headercount);
             frm.Show();
         }
     }
