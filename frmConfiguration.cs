@@ -24,7 +24,6 @@ namespace CsvTool
         string[] headers;
         string[] cols;
         char delimiter;
-        private OpenFileDialog openFileDialog = new OpenFileDialog();
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
@@ -35,11 +34,10 @@ namespace CsvTool
             try
             {
                 char.TryParse(txtDelimiter.Text, out delimiter);
-                string a = "";
                 using (StreamReader sr = new StreamReader(filePath))
                 {
                     //Eğer ilk veride column nameleri yoksa ilk veriyi column name olarak atar.
-                    headers = sr.ReadLine().Split(txtDelimiter.Text);
+                    headers = sr.ReadLine().Split(delimiter);
 
                     foreach (string header in headers)
                     {
@@ -48,7 +46,7 @@ namespace CsvTool
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        cols = line.Split(txtDelimiter.Text);
+                        cols = line.Split(delimiter);
                         Dictionary<string, string> rowData = new Dictionary<string, string>();
 
                         for (int i = 0; i < headers.Length; i++)
@@ -149,18 +147,8 @@ namespace CsvTool
             }
             return sb.ToString();
         }
-        private void btnSelectPath_Click(object sender, EventArgs e)
+        void ModelSelected()
         {
-            filePath = _csvPath;
-            folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                txtExportPath.Text = folderBrowserDialog.SelectedPath;
-            }
-        }
-        private void BtnSave_Click(object sender, EventArgs e)
-        {
-            LoadCsvData();
             string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewModel.txt");
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
@@ -172,7 +160,106 @@ namespace CsvTool
                 }
             }
         }
+        void SqlSelected()
+        {
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewSql.txt");
+            using (StreamWriter writer = new StreamWriter(newModelDataPath))
+            {
+                writer.WriteLine($"INSERT INTO {txtTableName.Text} (");
+                int i = 0;
+                foreach (var header in headers)
+                {
+                    i++;
+                    writer.Write(header.Trim() + ((i < headers.Length) ? ", " : ")"));
+                }
 
+                writer.WriteLine(" VALUES");
 
+                bool isFirstRow = true;
+                foreach (var rowData in dataList)
+                {
+                    if (isFirstRow)
+                    {
+                        writer.Write("(");
+                        isFirstRow = false;
+                    }
+                    else
+                    {
+                        writer.Write(",\n(");
+                    }
+
+                    i = 0;
+                    foreach (var header in headers)
+                    {
+                        i++;
+                        string value = rowData.ContainsKey(header) ? rowData[header] : "NULL";
+                        writer.Write($"'{value.Replace("'", "''")}'");
+                        if (i < headers.Length)
+                        {
+                            writer.Write(", ");
+                        }
+                    }
+                    writer.Write(")");
+                }
+
+                writer.WriteLine(";");
+            }
+        }
+        void MongoSelected()
+        {
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewSql.txt");
+            using (StreamWriter writer = new StreamWriter(newModelDataPath))
+            {
+                writer.WriteLine($"db.getCollection(\"{txtTableName.Text}\").insert([");
+            }
+        }
+        private void btnSelectPath_Click(object sender, EventArgs e)
+        {
+            filePath = _csvPath;
+            folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                txtExportPath.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        List<int> selectedIndices = new List<int>();
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtDelimiter.Text))
+            {
+                MessageBox.Show("Delimiter Cannot Be Empty","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            LoadCsvData();
+
+            foreach (int index in chlistOutput.CheckedIndices)
+            {
+                string selectedItem = chlistOutput.Items[index].ToString();
+
+                if (selectedItem == "Model")
+                {
+                    ModelSelected();
+                }
+                else if(selectedItem=="Sql")
+                {
+                    SqlSelected();
+                }
+                else if (selectedItem == "Mongo")
+                {
+                    MongoSelected();
+                }
+
+                selectedIndices.Add(index);
+            }
+            MessageBox.Show($"File Saved To \n{txtExportPath.Text}","Success",MessageBoxButtons.OK,MessageBoxIcon.Information);
+        }
+        private void BtnSetColNames_Click(object sender, EventArgs e)
+        {
+            int headercount=headers.Count();
+            frmNewColNames frm = new frmNewColNames(headercount);//Henüz yapılmadı
+            frm.Show();
+        }
     }
 }
