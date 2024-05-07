@@ -45,6 +45,8 @@
             // 
             // BtnSave
             // 
+            BtnSave.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            BtnSave.Appearance.Options.UseFont = true;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
             BtnSave.Location = new Point(150, 303);
             BtnSave.Name = "BtnSave";
@@ -80,7 +82,7 @@
             Controls.Add(LblInformation);
             Controls.Add(BtnSave);
             Controls.Add(TxtNewColNames);
-            IconOptions.Image = (Image)resources.GetObject("frmNewColNames.IconOptions.Image");
+            IconOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("frmNewColNames.IconOptions.SvgImage");
             Name = "frmNewColNames";
             Text = "New Column Names";
             ResumeLayout(false);

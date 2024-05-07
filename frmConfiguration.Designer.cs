@@ -57,11 +57,10 @@ namespace CsvTool
             // lblrowcount
             // 
             lblrowcount.AutoSize = true;
-            lblrowcount.Location = new Point(12, 368);
+            lblrowcount.Location = new Point(12, 345);
             lblrowcount.Name = "lblrowcount";
-            lblrowcount.Size = new Size(60, 13);
+            lblrowcount.Size = new Size(0, 13);
             lblrowcount.TabIndex = 0;
-            lblrowcount.Text = "Row Count";
             // 
             // txtDelimiter
             // 
@@ -96,7 +95,7 @@ namespace CsvTool
             Layout.Controls.Add(lblExportPath, 0, 3);
             Layout.Controls.Add(btnSelectPath, 1, 3);
             Layout.Controls.Add(txtTableName, 1, 2);
-            Layout.Location = new Point(12, 42);
+            Layout.Location = new Point(12, 19);
             Layout.Name = "Layout";
             Layout.RowCount = 4;
             Layout.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
@@ -145,6 +144,8 @@ namespace CsvTool
             // 
             // btnSelectPath
             // 
+            btnSelectPath.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
+            btnSelectPath.Appearance.Options.UseFont = true;
             btnSelectPath.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("btnSelectPath.ImageOptions.SvgImage");
             btnSelectPath.Location = new Point(140, 125);
             btnSelectPath.Name = "btnSelectPath";
@@ -163,9 +164,11 @@ namespace CsvTool
             // 
             // BtnSave
             // 
+            BtnSave.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
+            BtnSave.Appearance.Options.UseFont = true;
             BtnSave.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
-            BtnSave.Location = new Point(9, 333);
+            BtnSave.Location = new Point(9, 310);
             BtnSave.Name = "BtnSave";
             BtnSave.RightToLeft = RightToLeft.Yes;
             BtnSave.Size = new Size(305, 32);
@@ -176,7 +179,7 @@ namespace CsvTool
             // txtExportPath
             // 
             txtExportPath.Enabled = false;
-            txtExportPath.Location = new Point(12, 224);
+            txtExportPath.Location = new Point(12, 201);
             txtExportPath.Name = "txtExportPath";
             txtExportPath.Size = new Size(302, 20);
             txtExportPath.TabIndex = 10;
@@ -184,7 +187,7 @@ namespace CsvTool
             // labelControl2
             // 
             labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            labelControl2.Location = new Point(15, 198);
+            labelControl2.Location = new Point(15, 175);
             labelControl2.Name = "labelControl2";
             labelControl2.Size = new Size(94, 20);
             labelControl2.TabIndex = 11;
@@ -192,9 +195,11 @@ namespace CsvTool
             // 
             // BtnSetColNames
             // 
+            BtnSetColNames.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
+            BtnSetColNames.Appearance.Options.UseFont = true;
             BtnSetColNames.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSetColNames.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSetColNames.ImageOptions.SvgImage");
-            BtnSetColNames.Location = new Point(9, 293);
+            BtnSetColNames.Location = new Point(9, 270);
             BtnSetColNames.Name = "BtnSetColNames";
             BtnSetColNames.RightToLeft = RightToLeft.Yes;
             BtnSetColNames.Size = new Size(305, 32);
@@ -205,7 +210,7 @@ namespace CsvTool
             // ChboxColsAvailable
             // 
             ChboxColsAvailable.EditValue = true;
-            ChboxColsAvailable.Location = new Point(9, 250);
+            ChboxColsAvailable.Location = new Point(9, 227);
             ChboxColsAvailable.Name = "ChboxColsAvailable";
             ChboxColsAvailable.Properties.Caption = "Are the column names available in the first row of the csv?";
             ChboxColsAvailable.Size = new Size(325, 20);
@@ -213,12 +218,14 @@ namespace CsvTool
             // 
             // btnBack
             // 
+            btnBack.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
+            btnBack.Appearance.Options.UseFont = true;
             btnBack.ImageOptions.Image = (Image)resources.GetObject("btnBack.ImageOptions.Image");
             btnBack.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            btnBack.Location = new Point(9, 4);
+            btnBack.Location = new Point(214, 354);
             btnBack.Name = "btnBack";
             btnBack.RightToLeft = RightToLeft.Yes;
-            btnBack.Size = new Size(79, 32);
+            btnBack.Size = new Size(100, 32);
             btnBack.TabIndex = 8;
             btnBack.Text = "Restart";
             btnBack.Click += btnBack_Click;
@@ -227,7 +234,7 @@ namespace CsvTool
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(326, 408);
+            ClientSize = new Size(326, 396);
             Controls.Add(btnBack);
             Controls.Add(ChboxColsAvailable);
             Controls.Add(BtnSetColNames);
@@ -237,12 +244,13 @@ namespace CsvTool
             Controls.Add(Layout);
             Controls.Add(lblrowcount);
             FormBorderStyle = FormBorderStyle.Fixed3D;
-            IconOptions.Image = (Image)resources.GetObject("frmConfiguration.IconOptions.Image");
+            IconOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("frmConfiguration.IconOptions.SvgImage");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "frmConfiguration";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Configuration";
+            FormClosed += frmConfiguration_FormClosed;
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).EndInit();
             Layout.ResumeLayout(false);
             Layout.PerformLayout();

@@ -29,7 +29,6 @@ namespace CsvTool
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
         Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
-
         void LoadCsvData()
         {
             try
@@ -41,14 +40,7 @@ namespace CsvTool
                     {
                         headers = sr.ReadLine().Split(delimiter);
                     }
-                    //else
-                    //{
-                    //    headers = frm.NewCols;
-                    //}
-                    foreach (string header in headers)
-                    {
-                        valtypes.Add(header.Trim(), typeof(string));
-                    }
+
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
@@ -64,7 +56,11 @@ namespace CsvTool
 
                                 // Veri tipini güncelle
                                 Type valueType = DetermineValueType(trimmedValue);
-                                if (valueType != valtypes[headers[i].Trim()])
+                                if (!valtypes.ContainsKey(headers[i].Trim()))
+                                {
+                                    valtypes.Add(headers[i].Trim(), valueType);
+                                }
+                                else if (valueType != valtypes[headers[i].Trim()])
                                 {
                                     valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
                                 }
@@ -85,58 +81,60 @@ namespace CsvTool
                 Application.Exit();
             }
 
-            lblrowcount.Text = dataList.Count().ToString();
+            lblrowcount.Text = "Row Count :"+dataList.Count().ToString();
         }
-        void LoadForNewCols()
-        {
-            try
-            {
-                char.TryParse(txtDelimiter.Text, out delimiter);
-                using (StreamReader sr = new StreamReader(filePath))
-                {
-                    headers = sr.ReadLine().Split(delimiter);
+        //void LoadForNewCols() sadece new column oluştururken çalışıyor.
+        //{
+        //    try
+        //    {
+        //        char.TryParse(txtDelimiter.Text, out delimiter);
+        //        using (StreamReader sr = new StreamReader(filePath))
+        //        {
+        //            headers = sr.ReadLine().Split(delimiter);
 
-                    foreach (string header in headers)
-                    {
-                        valtypes.Add(header.Trim(), typeof(string));
-                    }
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        cols = line.Split(delimiter);
-                        Dictionary<string, string> rowData = new Dictionary<string, string>();
+        //            Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
 
-                        for (int i = 0; i < headers.Length; i++)
-                        {
-                            if (i < cols.Length)
-                            {
-                                string trimmedValue = cols[i].Trim('\"');
-                                rowData.Add(headers[i].Trim(), trimmedValue.Trim());
+        //            string line;
+        //            while ((line = sr.ReadLine()) != null)
+        //            {
+        //                cols = line.Split(delimiter);
+        //                Dictionary<string, string> rowData = new Dictionary<string, string>();
 
-                                // Veri tipini güncelle
-                                Type valueType = DetermineValueType(trimmedValue);
-                                if (valueType != valtypes[headers[i].Trim()])
-                                {
-                                    valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
-                                }
-                            }
-                            else
-                            {
-                                rowData.Add(headers[i].Trim(), "");
-                            }
-                        }
+        //                for (int i = 0; i < headers.Length; i++)
+        //                {
+        //                    if (i < cols.Length)
+        //                    {
+        //                        string trimmedValue = cols[i].Trim('\"');
+        //                        rowData.Add(headers[i].Trim(), trimmedValue.Trim());
 
-                        dataList.Add(rowData);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
-            }
-            lblrowcount.Text = dataList.Count().ToString();
-        }
+        //                        // Veri tipini güncelle
+        //                        Type valueType = DetermineValueType(trimmedValue);
+        //                        if (!valtypes.ContainsKey(headers[i].Trim()))
+        //                        {
+        //                            valtypes.Add(headers[i].Trim(), valueType);
+        //                        }
+        //                        else if (valueType != valtypes[headers[i].Trim()])
+        //                        {
+        //                            valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        rowData.Add(headers[i].Trim(), "");
+        //                    }
+        //                }
+
+        //                dataList.Add(rowData);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        Application.Exit();
+        //    }
+        //    lblrowcount.Text = dataList.Count().ToString();
+        //}
 
         public static void StartWork()
         {
@@ -162,38 +160,27 @@ namespace CsvTool
 
             if (type1 == typeof(long) || type2 == typeof(long))
                 return typeof(long);
-
             return typeof(int);
         }
         private Type DetermineValueType(string value)
         {
-            value = value.Trim('\"');
-
-            if (string.IsNullOrWhiteSpace(value))
-                return typeof(string);
 
             if (int.TryParse(value, out _))
                 return typeof(int);
 
-            if (long.TryParse(value, out _))
+            else if (long.TryParse(value, out _))
                 return typeof(long);
 
-            if (float.TryParse(value, out _))
-                return typeof(float);
-
-            if (double.TryParse(value, out _))
-                return typeof(double);
-
-            if (decimal.TryParse(value, out _))
+            else if (decimal.TryParse(value, out _))
                 return typeof(decimal);
 
-            if (bool.TryParse(value, out _))
+            else if (bool.TryParse(value, out _))
                 return typeof(bool);
 
-            if (DateTime.TryParse(value, out _))
+            else if (DateTime.TryParse(value, out _))
                 return typeof(DateTime);
-
-            return typeof(string);
+            else
+                return typeof(string);
         }
         private string GetValidIdentifier(string input)
         {
@@ -217,20 +204,27 @@ namespace CsvTool
         }
         void ModelSelected()
         {
-            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewModel.txt");
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}_Model.txt");
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 foreach (string header in headers)
                 {
                     string propertyName = GetValidIdentifier(header);
-                    Type columnType = valtypes[header];
-                    writer.WriteLine($"public {columnType.Name} {propertyName} {{ get; set; }}");
+                    Type columnType;
+                    if (valtypes.TryGetValue(header, out columnType))
+                    {
+                        writer.WriteLine($"public {columnType.Name} {propertyName} {{ get; set; }}");
+                    }
+                    else
+                    {
+                        writer.WriteLine($"public string {propertyName} {{ get; set; }}");
+                    }
                 }
             }
         }
         void SqlSelected()
         {
-            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewSql.txt");
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}_Sql.txt");
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 writer.WriteLine($"INSERT INTO {txtTableName.Text} (");
@@ -275,7 +269,7 @@ namespace CsvTool
         }
         void MongoSelected()
         {
-            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}NewMongo.txt");
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}_Mongo.txt");
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 writer.WriteLine($"db.getCollection(\"{txtTableName.Text}\").insert([");
@@ -371,7 +365,7 @@ namespace CsvTool
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
             StartWork();
-            LoadForNewCols();
+            //LoadForNewCols();
             EndWork();
             int headercount = headers.Count();
             frmNewColNames frm = new frmNewColNames(headercount);
@@ -382,6 +376,11 @@ namespace CsvTool
         {
             Application.Restart();
             Environment.Exit(0);
+        }
+
+        private void frmConfiguration_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

@@ -35,10 +35,12 @@
             // LblDragCsv
             // 
             LblDragCsv.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LblDragCsv.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            LblDragCsv.Appearance.Options.UseFont = true;
             LblDragCsv.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.Horizontal;
-            LblDragCsv.Location = new Point(159, 130);
+            LblDragCsv.Location = new Point(128, 127);
             LblDragCsv.Name = "LblDragCsv";
-            LblDragCsv.Size = new Size(189, 13);
+            LblDragCsv.Size = new Size(255, 16);
             LblDragCsv.TabIndex = 0;
             LblDragCsv.Text = "Please drag the .csv file to the screen. ";
             // 
@@ -49,7 +51,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(515, 307);
             Controls.Add(LblDragCsv);
-            IconOptions.Image = (Image)resources.GetObject("frmCsvWaiting.IconOptions.Image");
+            IconOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("frmCsvWaiting.IconOptions.SvgImage");
             MaximizeBox = false;
             Name = "frmCsvWaiting";
             StartPosition = FormStartPosition.CenterScreen;
