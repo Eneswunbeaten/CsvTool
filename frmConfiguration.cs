@@ -1,6 +1,8 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraLayout.Painting;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraWaitForm;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -81,7 +83,7 @@ namespace CsvTool
                 Application.Exit();
             }
 
-            lblrowcount.Text = "Row Count :"+dataList.Count().ToString();
+            lblrowcount.Text = "Row Count :" + dataList.Count().ToString();
         }
         //void LoadForNewCols() sadece new column oluştururken çalışıyor.
         //{
@@ -202,6 +204,7 @@ namespace CsvTool
             }
             return sb.ToString();
         }
+        #region ConvertMethods
         void ModelSelected()
         {
             string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}_Model.txt");
@@ -273,37 +276,71 @@ namespace CsvTool
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 writer.WriteLine($"db.getCollection(\"{txtTableName.Text}\").insert([");
-
-                bool isFirstRow = true;
-                foreach (var rowData in dataList)
+                if (ChboxAddId.CheckState == CheckState.Checked)
                 {
-                    if (isFirstRow)
+                    bool isFirstRow = true;
+                    foreach (var rowData in dataList)
                     {
-                        writer.Write("{ ");
-                        isFirstRow = false;
-                    }
-                    else
-                    {
-                        writer.Write(", \n{ ");
-                    }
-
-                    int i = 0;
-                    foreach (var header in headers)
-                    {
-                        i++;
-                        string value = rowData.ContainsKey(header) ? rowData[header] : "null";
-                        writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
-                        if (i < headers.Length)
+                        if (isFirstRow)
                         {
-                            writer.Write(", ");
+                            writer.Write("{ ");
+                            isFirstRow = false;
                         }
+                        else
+                        {
+                            writer.Write(", \n{ ");
+                        }
+                        int i = 0;
+                        foreach (var header in headers)
+                        {
+                            i++;
+                            string value = rowData.ContainsKey(header) ? rowData[header] : "null";
+                            writer.Write("id:"+ $"\"{ObjectId.GenerateNewId()}\""+",");
+                            writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
+                            if (i < headers.Length)
+                            {
+                                writer.Write(", ");
+                            }
+                        }
+                        writer.Write(" }");
                     }
-                    writer.Write(" }");
-                }
 
-                writer.WriteLine("]);");
+                    writer.WriteLine("]);");
+                }
+                else
+                {
+                    bool isFirstRow1 = true;
+                    foreach (var rowData in dataList)
+                    {
+                        if (isFirstRow1)
+                        {
+                            writer.Write("{ ");
+                            isFirstRow1 = false;
+                        }
+                        else
+                        {
+                            writer.Write(", \n{ ");
+                        }
+
+                        int i = 0;
+                        foreach (var header in headers)
+                        {
+                            i++;
+                            string value = rowData.ContainsKey(header) ? rowData[header] : "null";
+                            writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
+                            if (i < headers.Length)
+                            {
+                                writer.Write(", ");
+                            }
+                        }
+                        writer.Write(" }");
+                    }
+
+                    writer.WriteLine("]);");
+                }
             }
         }
+        #endregion
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
             folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
@@ -381,6 +418,19 @@ namespace CsvTool
         private void frmConfiguration_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+        private void chlistOutput_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            bool isMongoSelected = true;
+            foreach (int index in chlistOutput.CheckedIndices)
+            {
+                if (chlistOutput.Items[index].ToString() == "Mongo")
+                {
+                    isMongoSelected = false;
+                    break;
+                }
+            }
+            ChboxAddId.Enabled = isMongoSelected;
         }
     }
 }
