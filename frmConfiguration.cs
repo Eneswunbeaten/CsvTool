@@ -59,10 +59,11 @@ namespace CsvTool
                         {
                             if (i < cols.Length)
                             {
-                                rowData.Add(headers[i].Trim(), cols[i].Trim());
+                                string trimmedValue = cols[i].Trim('\"');
+                                rowData.Add(headers[i].Trim(), trimmedValue.Trim());
 
-                                // Veri tipini günceller
-                                Type valueType = DetermineValueType(cols[i].Trim());
+                                // Veri tipini güncelle
+                                Type valueType = DetermineValueType(trimmedValue);
                                 if (valueType != valtypes[headers[i].Trim()])
                                 {
                                     valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
@@ -109,9 +110,11 @@ namespace CsvTool
                         {
                             if (i < cols.Length)
                             {
-                                rowData.Add(headers[i].Trim(), cols[i].Trim());
+                                string trimmedValue = cols[i].Trim('\"');
+                                rowData.Add(headers[i].Trim(), trimmedValue.Trim());
 
-                                Type valueType = DetermineValueType(cols[i].Trim());
+                                // Veri tipini güncelle
+                                Type valueType = DetermineValueType(trimmedValue);
                                 if (valueType != valtypes[headers[i].Trim()])
                                 {
                                     valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
@@ -164,6 +167,8 @@ namespace CsvTool
         }
         private Type DetermineValueType(string value)
         {
+            value = value.Trim('\"');
+
             if (string.IsNullOrWhiteSpace(value))
                 return typeof(string);
 
@@ -285,7 +290,7 @@ namespace CsvTool
                     }
                     else
                     {
-                        writer.Write(", { ");
+                        writer.Write(", \n{ ");
                     }
 
                     int i = 0;
@@ -307,7 +312,6 @@ namespace CsvTool
         }
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
-            filePath = _csvPath;
             folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
@@ -319,15 +323,25 @@ namespace CsvTool
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            filePath = _csvPath;
             if (string.IsNullOrEmpty(txtDelimiter.Text))
             {
-                MessageBox.Show("Delimiter Cannot Be Empty","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Delimiter Cannot Be Empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (txtDelimiter.Text.Length >= 2)
             {
-                MessageBox.Show("The Delimiter Can Consist Of Up To 1 Character","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("The Delimiter Can Consist Of Up To 1 Character", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+            if (string.IsNullOrEmpty(txtTableName.Text))
+            {
+                MessageBox.Show("Table Name Field Is Left Empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            if (string.IsNullOrEmpty(txtExportPath.Text))
+            {
+                txtExportPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
             StartWork();
             LoadCsvData();
@@ -339,7 +353,7 @@ namespace CsvTool
                 {
                     ModelSelected();
                 }
-                else if(selectedItem=="Sql")
+                else if (selectedItem == "Sql")
                 {
                     SqlSelected();
                 }
@@ -351,7 +365,7 @@ namespace CsvTool
                 selectedIndices.Add(index);
             }
             EndWork();
-            MessageBox.Show($"File Saved To \n{txtExportPath.Text}","Success",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show($"File Saved To \n{txtExportPath.Text}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BtnSetColNames_Click(object sender, EventArgs e)
@@ -362,6 +376,12 @@ namespace CsvTool
             int headercount = headers.Count();
             frmNewColNames frm = new frmNewColNames(headercount);
             frm.Show();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+            Environment.Exit(0);
         }
     }
 }
