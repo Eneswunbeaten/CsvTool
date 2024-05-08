@@ -29,7 +29,14 @@ namespace CsvTool
         private static string[] headers;
         string[] cols;
         char delimiter;
+        void Refresh()
+        {
+            _csvPath = filePath;
+            headers =null;
+            dataList.Clear();
+            valtypes.Clear();
 
+        }
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
         Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
@@ -257,11 +264,12 @@ namespace CsvTool
                             writer.Write(", \n{ ");
                         }
                         int i = 0;
+                        writer.Write("id:" + $"\"{ObjectId.GenerateNewId()}\"" + ",");
+
                         foreach (var header in headers)
                         {
                             i++;
                             string value = rowData.ContainsKey(header) ? rowData[header] : "null";
-                            writer.Write("id:" + $"\"{ObjectId.GenerateNewId()}\"" + ",");
                             writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
                             if (i < headers.Length)
                             {
@@ -364,6 +372,21 @@ namespace CsvTool
             }
             EndWork();
             MessageBox.Show($"File Saved To \n{txtExportPath.Text}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult dr = MessageBox.Show("Will you continue with the same file?\n(Closes the program when the Cancel button is clicked.)", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            switch (dr)
+            {
+                case DialogResult.Yes:
+                    Refresh();
+                    break;
+                case DialogResult.No:
+                    Application.Restart();
+                    Environment.Exit(0);
+                    break;
+                case DialogResult.Cancel:
+                    Environment.Exit(0);
+                    break;
+            }
         }
 
         private void BtnSetColNames_Click(object sender, EventArgs e)

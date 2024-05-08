@@ -31,19 +31,25 @@ namespace CsvTool
                 DialogResult = DialogResult.OK;
                 Close();
             }
+            else
+            {
+                if (string.IsNullOrEmpty(txtDelimiter.Text))
+                {
+                    MessageBox.Show("The delimiter cannot be empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Close();
+                }
+                else if (txtDelimiter.Text.Length > 1)
+                {
+                    MessageBox.Show("Delimiter must be maximum 1 character", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
             if (NewCols.Length > _count)
             {
                 MessageBox.Show("You have entered more column names than the number of columns in the CSV file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            //else
-            //{
-            //    //if (string.IsNullOrEmpty(txtDelimiter.Text))
-            //    //{
-            //    //    MessageBox.Show("The delimiter cannot be empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    //    Close();
-            //    //}
-            //}
+
         }
     }
 }
