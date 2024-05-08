@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.DirectX.Common.Direct2D;
+using DevExpress.XtraEditors;
 using DevExpress.XtraLayout.Painting;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraWaitForm;
@@ -28,6 +29,7 @@ namespace CsvTool
         private static string[] headers;
         string[] cols;
         char delimiter;
+
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
         Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
@@ -84,7 +86,7 @@ namespace CsvTool
 
             lblrowcount.Text = "Row Count :" + dataList.Count().ToString();
         }
-        void LoadForNewCols()
+        void LoadHeaders()
         {
             filePath = _csvPath;
             try
@@ -93,41 +95,6 @@ namespace CsvTool
                 using (StreamReader sr = new StreamReader(filePath))
                 {
                     headers = sr.ReadLine().Split(delimiter);
-
-                    Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
-
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        cols = line.Split(delimiter);
-                        Dictionary<string, string> rowData = new Dictionary<string, string>();
-
-                        for (int i = 0; i<headers.Length; i++)
-                        {
-                            if (i<cols.Length)
-                            {
-                                string trimmedValue = cols[i].Trim('\"');
-                                rowData.Add(headers[i].Trim(), trimmedValue.Trim());
-
-                                // Veri tipini güncelle
-                                Type valueType = DetermineValueType(trimmedValue);
-                                if (!valtypes.ContainsKey(headers[i].Trim()))
-                                {
-                                    valtypes.Add(headers[i].Trim(), valueType);
-                                }
-                                else if (valueType != valtypes[headers[i].Trim()])
-                                {
-                                    valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
-                                }
-                            }
-                            else
-                            {
-                                rowData.Add(headers[i].Trim(), "");
-                            }
-                        }
-
-                        dataList.Add(rowData);
-                    }
                 }
             }
             catch (Exception ex)
@@ -135,7 +102,6 @@ namespace CsvTool
                 MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
-            lblrowcount.Text = dataList.Count().ToString();
         }
 
         public static void StartWork()
@@ -355,6 +321,7 @@ namespace CsvTool
         private void BtnSave_Click(object sender, EventArgs e)
         {
             filePath = _csvPath;
+            #region Possible Exception Control
             if (string.IsNullOrEmpty(txtDelimiter.Text))
             {
                 MessageBox.Show("Delimiter Cannot Be Empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -369,11 +336,11 @@ namespace CsvTool
             {
                 MessageBox.Show("Table Name Field Is Left Empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
             if (string.IsNullOrEmpty(txtExportPath.Text))
             {
                 txtExportPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
+            #endregion
             StartWork();
             LoadCsvData();
             foreach (int index in chlistOutput.CheckedIndices)
@@ -402,10 +369,17 @@ namespace CsvTool
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
             StartWork();
-            LoadForNewCols();
+            LoadHeaders();
             EndWork();
             int headercount = headers.Count();
             frmNewColNames frm = new frmNewColNames(headercount);
+            frm.Visible = false;
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                MessageBox.Show(frm.NewCols[0]+","+frm.NewCols[1]);
+                headers=frm.NewCols;
+                return;
+            }
             frm.Show();
         }
 

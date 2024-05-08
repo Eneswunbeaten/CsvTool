@@ -21,13 +21,14 @@ namespace CsvTool
             LblColCount.Text += _count.ToString();
         }
         char delimiter;
-        public string[] NewCols;
+        public string[] NewCols { get; set; }
         private void BtnSave_Click(object sender, EventArgs e)
         {
             if(char.TryParse(txtDelimiter.Text, out delimiter))
             {
                 NewCols = TxtNewColNames.Text.Split(delimiter);
                 NewCols = NewCols.Take(_count).ToArray();
+                DialogResult = DialogResult.OK;
                 Close();
             }
             else
