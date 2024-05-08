@@ -30,6 +30,7 @@ namespace CsvTool
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmConfiguration));
             lblrowcount = new Label();
             txtDelimiter = new DevExpress.XtraEditors.TextEdit();
@@ -48,6 +49,8 @@ namespace CsvTool
             ChboxColsAvailable = new DevExpress.XtraEditors.CheckEdit();
             btnBack = new DevExpress.XtraEditors.SimpleButton();
             ChboxAddId = new DevExpress.XtraEditors.CheckEdit();
+            toolTip1 = new ToolTip(components);
+            labelControl3 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).BeginInit();
             Layout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtTableName.Properties).BeginInit();
@@ -73,6 +76,7 @@ namespace CsvTool
             txtDelimiter.Properties.MaskSettings.Set("mask", ".+");
             txtDelimiter.Size = new Size(137, 20);
             txtDelimiter.TabIndex = 1;
+            toolTip1.SetToolTip(txtDelimiter, "Enter the symbol that separates each column in the csv file.");
             // 
             // lbldelimiter
             // 
@@ -81,7 +85,8 @@ namespace CsvTool
             lbldelimiter.Name = "lbldelimiter";
             lbldelimiter.Size = new Size(94, 13);
             lbldelimiter.TabIndex = 2;
-            lbldelimiter.Text = "Select a Delimiter :";
+            lbldelimiter.Text = "Write a Delimiter :";
+            toolTip1.SetToolTip(lbldelimiter, "Enter the symbol that separates each column in the csv file.");
             // 
             // Layout
             // 
@@ -97,7 +102,7 @@ namespace CsvTool
             Layout.Controls.Add(lblExportPath, 0, 3);
             Layout.Controls.Add(btnSelectPath, 1, 3);
             Layout.Controls.Add(txtTableName, 1, 2);
-            Layout.Location = new Point(12, 19);
+            Layout.Location = new Point(12, 46);
             Layout.Name = "Layout";
             Layout.RowCount = 4;
             Layout.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
@@ -116,6 +121,7 @@ namespace CsvTool
             labelControl1.Size = new Size(94, 29);
             labelControl1.TabIndex = 8;
             labelControl1.Text = "Table Name :";
+            toolTip1.SetToolTip(labelControl1, "Enter the table name. (This table name will be in your file name.)");
             // 
             // lbloutput
             // 
@@ -125,15 +131,18 @@ namespace CsvTool
             lbloutput.Size = new Size(94, 57);
             lbloutput.TabIndex = 3;
             lbloutput.Text = "What should the\r\noutput be like? :";
+            toolTip1.SetToolTip(lbloutput, "What should the parsed data in the csv file be converted to?");
             // 
             // chlistOutput
             // 
+            chlistOutput.BorderStyle = BorderStyle.FixedSingle;
             chlistOutput.FormattingEnabled = true;
-            chlistOutput.Items.AddRange(new object[] { "Mongo", "Sql", "Model" });
+            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command" });
             chlistOutput.Location = new Point(140, 24);
             chlistOutput.Name = "chlistOutput";
-            chlistOutput.Size = new Size(137, 52);
+            chlistOutput.Size = new Size(137, 50);
             chlistOutput.TabIndex = 2;
+            toolTip1.SetToolTip(chlistOutput, "What should the parsed data in the csv file be converted to?");
             chlistOutput.ItemCheck += chlistOutput_ItemCheck;
             // 
             // lblExportPath
@@ -144,6 +153,7 @@ namespace CsvTool
             lblExportPath.Size = new Size(94, 28);
             lblExportPath.TabIndex = 5;
             lblExportPath.Text = "Export Path :";
+            toolTip1.SetToolTip(lblExportPath, "After the csv file has been converted, the result should be output to which location on the computer.");
             // 
             // btnSelectPath
             // 
@@ -156,6 +166,7 @@ namespace CsvTool
             btnSelectPath.Size = new Size(137, 28);
             btnSelectPath.TabIndex = 4;
             btnSelectPath.Text = "Select Path";
+            toolTip1.SetToolTip(btnSelectPath, "After the csv file has been converted, the result should be output to which location on the computer.");
             btnSelectPath.Click += btnSelectPath_Click;
             // 
             // txtTableName
@@ -164,6 +175,7 @@ namespace CsvTool
             txtTableName.Name = "txtTableName";
             txtTableName.Size = new Size(137, 20);
             txtTableName.TabIndex = 3;
+            toolTip1.SetToolTip(txtTableName, "Enter the table name. (This table name will be in your file name.)");
             // 
             // BtnSave
             // 
@@ -171,18 +183,19 @@ namespace CsvTool
             BtnSave.Appearance.Options.UseFont = true;
             BtnSave.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
-            BtnSave.Location = new Point(9, 313);
+            BtnSave.Location = new Point(9, 340);
             BtnSave.Name = "BtnSave";
             BtnSave.RightToLeft = RightToLeft.Yes;
             BtnSave.Size = new Size(305, 32);
             BtnSave.TabIndex = 6;
-            BtnSave.Text = "Save";
+            BtnSave.Text = "Start";
+            toolTip1.SetToolTip(BtnSave, "Click here to start the conversion process.");
             BtnSave.Click += BtnSave_Click;
             // 
             // txtExportPath
             // 
             txtExportPath.Enabled = false;
-            txtExportPath.Location = new Point(12, 201);
+            txtExportPath.Location = new Point(12, 228);
             txtExportPath.Name = "txtExportPath";
             txtExportPath.Size = new Size(302, 20);
             txtExportPath.TabIndex = 10;
@@ -190,19 +203,21 @@ namespace CsvTool
             // labelControl2
             // 
             labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            labelControl2.Location = new Point(15, 175);
+            labelControl2.Location = new Point(15, 202);
             labelControl2.Name = "labelControl2";
             labelControl2.Size = new Size(94, 20);
             labelControl2.TabIndex = 11;
             labelControl2.Text = "Path :";
+            toolTip1.SetToolTip(labelControl2, "Click the Select Path button to edit this path.");
             // 
             // BtnSetColNames
             // 
             BtnSetColNames.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
             BtnSetColNames.Appearance.Options.UseFont = true;
+            BtnSetColNames.Enabled = false;
             BtnSetColNames.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSetColNames.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSetColNames.ImageOptions.SvgImage");
-            BtnSetColNames.Location = new Point(9, 273);
+            BtnSetColNames.Location = new Point(9, 300);
             BtnSetColNames.Name = "BtnSetColNames";
             BtnSetColNames.RightToLeft = RightToLeft.Yes;
             BtnSetColNames.Size = new Size(305, 32);
@@ -213,11 +228,13 @@ namespace CsvTool
             // ChboxColsAvailable
             // 
             ChboxColsAvailable.EditValue = true;
-            ChboxColsAvailable.Location = new Point(9, 227);
+            ChboxColsAvailable.Location = new Point(9, 254);
             ChboxColsAvailable.Name = "ChboxColsAvailable";
             ChboxColsAvailable.Properties.Caption = "Are the column names available in the first row of the csv?";
             ChboxColsAvailable.Size = new Size(305, 20);
             ChboxColsAvailable.TabIndex = 5;
+            toolTip1.SetToolTip(ChboxColsAvailable, "If the first line of the csv file does not contain column names, remove this tick and click on the “Set new Column names manually” button.");
+            ChboxColsAvailable.CheckStateChanged += ChboxColsAvailable_CheckStateChanged;
             // 
             // btnBack
             // 
@@ -225,28 +242,48 @@ namespace CsvTool
             btnBack.Appearance.Options.UseFont = true;
             btnBack.ImageOptions.Image = (Image)resources.GetObject("btnBack.ImageOptions.Image");
             btnBack.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            btnBack.Location = new Point(214, 357);
+            btnBack.Location = new Point(214, 384);
             btnBack.Name = "btnBack";
             btnBack.RightToLeft = RightToLeft.Yes;
             btnBack.Size = new Size(100, 32);
             btnBack.TabIndex = 8;
             btnBack.Text = "Restart";
+            toolTip1.SetToolTip(btnBack, "Restart the program to convert a new csv file.");
             btnBack.Click += btnBack_Click;
             // 
             // ChboxAddId
             // 
             ChboxAddId.Enabled = false;
-            ChboxAddId.Location = new Point(9, 249);
+            ChboxAddId.Location = new Point(9, 276);
             ChboxAddId.Name = "ChboxAddId";
             ChboxAddId.Properties.Caption = "Add Id? (Mongo Only)";
             ChboxAddId.Size = new Size(132, 20);
             ChboxAddId.TabIndex = 12;
+            toolTip1.SetToolTip(ChboxAddId, "Should the Id column be added when converting the csv file to Mongo Insert Command?");
+            // 
+            // toolTip1
+            // 
+            toolTip1.ToolTipIcon = ToolTipIcon.Info;
+            toolTip1.ToolTipTitle = "Information";
+            // 
+            // labelControl3
+            // 
+            labelControl3.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            labelControl3.ImageOptions.Alignment = ContentAlignment.MiddleLeft;
+            labelControl3.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("labelControl3.ImageOptions.SvgImage");
+            labelControl3.Location = new Point(-1, 7);
+            labelControl3.Name = "labelControl3";
+            labelControl3.Size = new Size(328, 36);
+            labelControl3.TabIndex = 13;
+            labelControl3.Text = "You can get detailed information by hovering over the texts.";
+            toolTip1.SetToolTip(labelControl3, "Enter the symbol that separates each column in the csv file.");
             // 
             // frmConfiguration
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(326, 396);
+            ClientSize = new Size(326, 429);
+            Controls.Add(labelControl3);
             Controls.Add(ChboxAddId);
             Controls.Add(btnBack);
             Controls.Add(ChboxColsAvailable);
@@ -294,5 +331,7 @@ namespace CsvTool
         private DevExpress.XtraEditors.CheckEdit ChboxColsAvailable;
         private DevExpress.XtraEditors.SimpleButton btnBack;
         private DevExpress.XtraEditors.CheckEdit ChboxAddId;
+        private ToolTip toolTip1;
+        private DevExpress.XtraEditors.LabelControl labelControl3;
     }
 }

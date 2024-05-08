@@ -20,17 +20,27 @@ namespace CsvTool
             InitializeComponent();
             LblColCount.Text += _count.ToString();
         }
+        char delimiter;
         public string[] NewCols;
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            NewCols = TxtNewColNames.Text.Split(',');
+            if(char.TryParse(txtDelimiter.Text, out delimiter))
+            {
+                NewCols = TxtNewColNames.Text.Split(delimiter);
+                NewCols = NewCols.Take(_count).ToArray();
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Delimiter can be maximum 1 character.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (NewCols.Length > _count)
             {
                 MessageBox.Show("You have entered more column names than the number of columns in the CSV file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            NewCols = NewCols.Take(_count).ToArray();
-            Close();
+
         }
     }
 }

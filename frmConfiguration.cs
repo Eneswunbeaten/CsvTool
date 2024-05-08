@@ -55,7 +55,6 @@ namespace CsvTool
                             {
                                 string trimmedValue = cols[i].Trim('\"');
                                 rowData.Add(headers[i].Trim(), trimmedValue.Trim());
-
                                 // Veri tipini güncelle
                                 Type valueType = DetermineValueType(trimmedValue);
                                 if (!valtypes.ContainsKey(headers[i].Trim()))
@@ -85,58 +84,59 @@ namespace CsvTool
 
             lblrowcount.Text = "Row Count :" + dataList.Count().ToString();
         }
-        //void LoadForNewCols() sadece new column oluştururken çalışıyor.
-        //{
-        //    try
-        //    {
-        //        char.TryParse(txtDelimiter.Text, out delimiter);
-        //        using (StreamReader sr = new StreamReader(filePath))
-        //        {
-        //            headers = sr.ReadLine().Split(delimiter);
+        void LoadForNewCols()
+        {
+            filePath = _csvPath;
+            try
+            {
+                char.TryParse(txtDelimiter.Text, out delimiter);
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    headers = sr.ReadLine().Split(delimiter);
 
-        //            Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
+                    Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
 
-        //            string line;
-        //            while ((line = sr.ReadLine()) != null)
-        //            {
-        //                cols = line.Split(delimiter);
-        //                Dictionary<string, string> rowData = new Dictionary<string, string>();
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        cols = line.Split(delimiter);
+                        Dictionary<string, string> rowData = new Dictionary<string, string>();
 
-        //                for (int i = 0; i < headers.Length; i++)
-        //                {
-        //                    if (i < cols.Length)
-        //                    {
-        //                        string trimmedValue = cols[i].Trim('\"');
-        //                        rowData.Add(headers[i].Trim(), trimmedValue.Trim());
+                        for (int i = 0; i<headers.Length; i++)
+                        {
+                            if (i<cols.Length)
+                            {
+                                string trimmedValue = cols[i].Trim('\"');
+                                rowData.Add(headers[i].Trim(), trimmedValue.Trim());
 
-        //                        // Veri tipini güncelle
-        //                        Type valueType = DetermineValueType(trimmedValue);
-        //                        if (!valtypes.ContainsKey(headers[i].Trim()))
-        //                        {
-        //                            valtypes.Add(headers[i].Trim(), valueType);
-        //                        }
-        //                        else if (valueType != valtypes[headers[i].Trim()])
-        //                        {
-        //                            valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        rowData.Add(headers[i].Trim(), "");
-        //                    }
-        //                }
+                                // Veri tipini güncelle
+                                Type valueType = DetermineValueType(trimmedValue);
+                                if (!valtypes.ContainsKey(headers[i].Trim()))
+                                {
+                                    valtypes.Add(headers[i].Trim(), valueType);
+                                }
+                                else if (valueType != valtypes[headers[i].Trim()])
+                                {
+                                    valtypes[headers[i].Trim()] = GetCommonType(valueType, valtypes[headers[i].Trim()]);
+                                }
+                            }
+                            else
+                            {
+                                rowData.Add(headers[i].Trim(), "");
+                            }
+                        }
 
-        //                dataList.Add(rowData);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        Application.Exit();
-        //    }
-        //    lblrowcount.Text = dataList.Count().ToString();
-        //}
+                        dataList.Add(rowData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+            lblrowcount.Text = dataList.Count().ToString();
+        }
 
         public static void StartWork()
         {
@@ -151,16 +151,16 @@ namespace CsvTool
             if (type1 == typeof(string) || type2 == typeof(string))
                 return typeof(string);
 
-            if (type1 == typeof(double) || type2 == typeof(double))
+            else if (type1 == typeof(double) || type2 == typeof(double))
                 return typeof(double);
 
-            if (type1 == typeof(float) || type2 == typeof(float))
+            else if (type1 == typeof(float) || type2 == typeof(float))
                 return typeof(float);
 
-            if (type1 == typeof(decimal) || type2 == typeof(decimal))
+            else if (type1 == typeof(decimal) || type2 == typeof(decimal))
                 return typeof(decimal);
 
-            if (type1 == typeof(long) || type2 == typeof(long))
+            else if (type1 == typeof(long) || type2 == typeof(long))
                 return typeof(long);
             return typeof(int);
         }
@@ -295,7 +295,7 @@ namespace CsvTool
                         {
                             i++;
                             string value = rowData.ContainsKey(header) ? rowData[header] : "null";
-                            writer.Write("id:"+ $"\"{ObjectId.GenerateNewId()}\""+",");
+                            writer.Write("id:" + $"\"{ObjectId.GenerateNewId()}\"" + ",");
                             writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
                             if (i < headers.Length)
                             {
@@ -380,15 +380,15 @@ namespace CsvTool
             {
                 string selectedItem = chlistOutput.Items[index].ToString();
 
-                if (selectedItem == "Model")
+                if (selectedItem.Contains("Model"))
                 {
                     ModelSelected();
                 }
-                else if (selectedItem == "Sql")
+                else if (selectedItem.Contains("Sql"))
                 {
                     SqlSelected();
                 }
-                else if (selectedItem == "Mongo")
+                else if (selectedItem.Contains("Mongo"))
                 {
                     MongoSelected();
                 }
@@ -402,7 +402,7 @@ namespace CsvTool
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
             StartWork();
-            //LoadForNewCols();
+            LoadForNewCols();
             EndWork();
             int headercount = headers.Count();
             frmNewColNames frm = new frmNewColNames(headercount);
@@ -424,13 +424,21 @@ namespace CsvTool
             bool isMongoSelected = true;
             foreach (int index in chlistOutput.CheckedIndices)
             {
-                if (chlistOutput.Items[index].ToString() == "Mongo")
+                if (chlistOutput.Items[index].ToString().Contains("Mongo"))
                 {
                     isMongoSelected = false;
                     break;
                 }
             }
             ChboxAddId.Enabled = isMongoSelected;
+        }
+
+        private void ChboxColsAvailable_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (ChboxColsAvailable.CheckState == CheckState.Unchecked)
+            {
+                BtnSetColNames.Enabled = true;
+            }
         }
     }
 }
