@@ -40,15 +40,15 @@ namespace CsvTool
                 char.TryParse(txtDelimiter.Text, out delimiter);
                 using (StreamReader sr = new StreamReader(filePath))
                 {
-                    if (ChboxColsAvailable.Checked)
+                    if (ChboxAvailableOnFirstRow.CheckState == CheckState.Checked)
                     {
-                        headers = sr.ReadLine().Split(delimiter);
-                    }
+                        headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
 
+                    }
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        cols = line.Split(delimiter);
+                        cols = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                         Dictionary<string, string> rowData = new Dictionary<string, string>();
 
                         for (int i = 0; i < headers.Length; i++)
@@ -94,7 +94,7 @@ namespace CsvTool
                 char.TryParse(txtDelimiter.Text, out delimiter);
                 using (StreamReader sr = new StreamReader(filePath))
                 {
-                    headers = sr.ReadLine().Split(delimiter);
+                    headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                 }
             }
             catch (Exception ex)
@@ -368,6 +368,7 @@ namespace CsvTool
 
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
+            ChboxAvailableOnFirstRow.CheckState = CheckState.Unchecked;
             StartWork();
             LoadHeaders();
             EndWork();
@@ -376,8 +377,7 @@ namespace CsvTool
             frm.Visible = false;
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(frm.NewCols[0]+","+frm.NewCols[1]);
-                headers=frm.NewCols;
+                headers = frm.NewCols;
                 return;
             }
             frm.Show();
@@ -405,14 +405,6 @@ namespace CsvTool
                 }
             }
             ChboxAddId.Enabled = isMongoSelected;
-        }
-
-        private void ChboxColsAvailable_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (ChboxColsAvailable.CheckState == CheckState.Unchecked)
-            {
-                BtnSetColNames.Enabled = true;
-            }
         }
     }
 }

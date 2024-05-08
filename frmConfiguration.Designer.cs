@@ -46,23 +46,24 @@ namespace CsvTool
             txtExportPath = new DevExpress.XtraEditors.TextEdit();
             labelControl2 = new DevExpress.XtraEditors.LabelControl();
             BtnSetColNames = new DevExpress.XtraEditors.SimpleButton();
-            ChboxColsAvailable = new DevExpress.XtraEditors.CheckEdit();
             btnBack = new DevExpress.XtraEditors.SimpleButton();
             ChboxAddId = new DevExpress.XtraEditors.CheckEdit();
             toolTip1 = new ToolTip(components);
             labelControl3 = new DevExpress.XtraEditors.LabelControl();
+            ChboxAvailableOnFirstRow = new DevExpress.XtraEditors.CheckEdit();
+            LblRestartInfo = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).BeginInit();
             Layout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtTableName.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ChboxColsAvailable.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAddId.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ChboxAvailableOnFirstRow.Properties).BeginInit();
             SuspendLayout();
             // 
             // lblrowcount
             // 
             lblrowcount.AutoSize = true;
-            lblrowcount.Location = new Point(12, 345);
+            lblrowcount.Location = new Point(24, 386);
             lblrowcount.Name = "lblrowcount";
             lblrowcount.Size = new Size(0, 13);
             lblrowcount.TabIndex = 0;
@@ -102,7 +103,7 @@ namespace CsvTool
             Layout.Controls.Add(lblExportPath, 0, 3);
             Layout.Controls.Add(btnSelectPath, 1, 3);
             Layout.Controls.Add(txtTableName, 1, 2);
-            Layout.Location = new Point(12, 46);
+            Layout.Location = new Point(23, 47);
             Layout.Name = "Layout";
             Layout.RowCount = 4;
             Layout.RowStyles.Add(new RowStyle(SizeType.Percent, 24F));
@@ -128,7 +129,7 @@ namespace CsvTool
             lbloutput.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             lbloutput.Location = new Point(3, 24);
             lbloutput.Name = "lbloutput";
-            lbloutput.Size = new Size(94, 57);
+            lbloutput.Size = new Size(91, 57);
             lbloutput.TabIndex = 3;
             lbloutput.Text = "What should the\r\noutput be like? :";
             toolTip1.SetToolTip(lbloutput, "What should the parsed data in the csv file be converted to?");
@@ -183,7 +184,7 @@ namespace CsvTool
             BtnSave.Appearance.Options.UseFont = true;
             BtnSave.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
-            BtnSave.Location = new Point(9, 340);
+            BtnSave.Location = new Point(20, 350);
             BtnSave.Name = "BtnSave";
             BtnSave.RightToLeft = RightToLeft.Yes;
             BtnSave.Size = new Size(305, 32);
@@ -195,7 +196,7 @@ namespace CsvTool
             // txtExportPath
             // 
             txtExportPath.Enabled = false;
-            txtExportPath.Location = new Point(12, 228);
+            txtExportPath.Location = new Point(23, 229);
             txtExportPath.Name = "txtExportPath";
             txtExportPath.Size = new Size(302, 20);
             txtExportPath.TabIndex = 10;
@@ -203,7 +204,7 @@ namespace CsvTool
             // labelControl2
             // 
             labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            labelControl2.Location = new Point(15, 202);
+            labelControl2.Location = new Point(23, 203);
             labelControl2.Name = "labelControl2";
             labelControl2.Size = new Size(94, 20);
             labelControl2.TabIndex = 11;
@@ -214,10 +215,9 @@ namespace CsvTool
             // 
             BtnSetColNames.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
             BtnSetColNames.Appearance.Options.UseFont = true;
-            BtnSetColNames.Enabled = false;
             BtnSetColNames.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSetColNames.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSetColNames.ImageOptions.SvgImage");
-            BtnSetColNames.Location = new Point(9, 300);
+            BtnSetColNames.Location = new Point(20, 310);
             BtnSetColNames.Name = "BtnSetColNames";
             BtnSetColNames.RightToLeft = RightToLeft.Yes;
             BtnSetColNames.Size = new Size(305, 32);
@@ -225,24 +225,13 @@ namespace CsvTool
             BtnSetColNames.Text = "Set new Column names manually";
             BtnSetColNames.Click += BtnSetColNames_Click;
             // 
-            // ChboxColsAvailable
-            // 
-            ChboxColsAvailable.EditValue = true;
-            ChboxColsAvailable.Location = new Point(9, 254);
-            ChboxColsAvailable.Name = "ChboxColsAvailable";
-            ChboxColsAvailable.Properties.Caption = "Are the column names available in the first row of the csv?";
-            ChboxColsAvailable.Size = new Size(305, 20);
-            ChboxColsAvailable.TabIndex = 5;
-            toolTip1.SetToolTip(ChboxColsAvailable, "If the first line of the csv file does not contain column names, remove this tick and click on the “Set new Column names manually” button.");
-            ChboxColsAvailable.CheckStateChanged += ChboxColsAvailable_CheckStateChanged;
-            // 
             // btnBack
             // 
             btnBack.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
             btnBack.Appearance.Options.UseFont = true;
             btnBack.ImageOptions.Image = (Image)resources.GetObject("btnBack.ImageOptions.Image");
             btnBack.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            btnBack.Location = new Point(214, 384);
+            btnBack.Location = new Point(225, 394);
             btnBack.Name = "btnBack";
             btnBack.RightToLeft = RightToLeft.Yes;
             btnBack.Size = new Size(100, 32);
@@ -254,7 +243,7 @@ namespace CsvTool
             // ChboxAddId
             // 
             ChboxAddId.Enabled = false;
-            ChboxAddId.Location = new Point(9, 276);
+            ChboxAddId.Location = new Point(20, 257);
             ChboxAddId.Name = "ChboxAddId";
             ChboxAddId.Properties.Caption = "Add Id? (Mongo Only)";
             ChboxAddId.Size = new Size(132, 20);
@@ -271,22 +260,42 @@ namespace CsvTool
             labelControl3.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
             labelControl3.ImageOptions.Alignment = ContentAlignment.MiddleLeft;
             labelControl3.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("labelControl3.ImageOptions.SvgImage");
-            labelControl3.Location = new Point(-1, 7);
+            labelControl3.Location = new Point(10, 8);
             labelControl3.Name = "labelControl3";
             labelControl3.Size = new Size(328, 36);
             labelControl3.TabIndex = 13;
             labelControl3.Text = "You can get detailed information by hovering over the texts.";
             toolTip1.SetToolTip(labelControl3, "Enter the symbol that separates each column in the csv file.");
             // 
+            // ChboxAvailableOnFirstRow
+            // 
+            ChboxAvailableOnFirstRow.EditValue = true;
+            ChboxAvailableOnFirstRow.Location = new Point(20, 284);
+            ChboxAvailableOnFirstRow.Name = "ChboxAvailableOnFirstRow";
+            ChboxAvailableOnFirstRow.Properties.Caption = "Are column names available in the first row?";
+            ChboxAvailableOnFirstRow.Size = new Size(305, 20);
+            ChboxAvailableOnFirstRow.TabIndex = 14;
+            toolTip1.SetToolTip(ChboxAvailableOnFirstRow, "Should the Id column be added when converting the csv file to Mongo Insert Command?");
+            // 
+            // LblRestartInfo
+            // 
+            LblRestartInfo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            LblRestartInfo.Location = new Point(20, 388);
+            LblRestartInfo.Name = "LblRestartInfo";
+            LblRestartInfo.Size = new Size(199, 46);
+            LblRestartInfo.TabIndex = 15;
+            LblRestartInfo.Text = "Use the Restart button when performing \r\nmore than one operation.\r\nOtherwise you will get incorrect results.";
+            // 
             // frmConfiguration
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(326, 429);
+            ClientSize = new Size(350, 450);
+            Controls.Add(LblRestartInfo);
+            Controls.Add(ChboxAvailableOnFirstRow);
             Controls.Add(labelControl3);
             Controls.Add(ChboxAddId);
             Controls.Add(btnBack);
-            Controls.Add(ChboxColsAvailable);
             Controls.Add(BtnSetColNames);
             Controls.Add(labelControl2);
             Controls.Add(txtExportPath);
@@ -306,8 +315,8 @@ namespace CsvTool
             Layout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)txtTableName.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ChboxColsAvailable.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAddId.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ChboxAvailableOnFirstRow.Properties).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -328,10 +337,11 @@ namespace CsvTool
         private DevExpress.XtraEditors.TextEdit txtExportPath;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.SimpleButton BtnSetColNames;
-        private DevExpress.XtraEditors.CheckEdit ChboxColsAvailable;
         private DevExpress.XtraEditors.SimpleButton btnBack;
         private DevExpress.XtraEditors.CheckEdit ChboxAddId;
         private ToolTip toolTip1;
         private DevExpress.XtraEditors.LabelControl labelControl3;
+        private DevExpress.XtraEditors.CheckEdit ChboxAvailableOnFirstRow;
+        private DevExpress.XtraEditors.LabelControl LblRestartInfo;
     }
 }

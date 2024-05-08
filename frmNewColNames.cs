@@ -26,22 +26,24 @@ namespace CsvTool
         {
             if(char.TryParse(txtDelimiter.Text, out delimiter))
             {
-                NewCols = TxtNewColNames.Text.Split(delimiter);
+                NewCols = TxtNewColNames.Text.Split(delimiter,StringSplitOptions.RemoveEmptyEntries);
                 NewCols = NewCols.Take(_count).ToArray();
                 DialogResult = DialogResult.OK;
                 Close();
-            }
-            else
-            {
-                MessageBox.Show("Delimiter can be maximum 1 character.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
             if (NewCols.Length > _count)
             {
                 MessageBox.Show("You have entered more column names than the number of columns in the CSV file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
+            //else
+            //{
+            //    //if (string.IsNullOrEmpty(txtDelimiter.Text))
+            //    //{
+            //    //    MessageBox.Show("The delimiter cannot be empty.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    //    Close();
+            //    //}
+            //}
         }
     }
 }
