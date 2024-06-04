@@ -99,10 +99,10 @@ namespace CsvTool
             Layout.Controls.Add(lbloutput, 0, 1);
             Layout.Controls.Add(lbldelimiter, 0, 0);
             Layout.Controls.Add(txtDelimiter, 1, 0);
-            Layout.Controls.Add(chlistOutput, 1, 1);
             Layout.Controls.Add(lblExportPath, 0, 3);
             Layout.Controls.Add(btnSelectPath, 1, 3);
             Layout.Controls.Add(txtTableName, 1, 2);
+            Layout.Controls.Add(chlistOutput, 1, 1);
             Layout.Location = new Point(23, 47);
             Layout.Name = "Layout";
             Layout.RowCount = 4;
@@ -111,13 +111,13 @@ namespace CsvTool
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
             Layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            Layout.Size = new Size(302, 156);
+            Layout.Size = new Size(302, 191);
             Layout.TabIndex = 3;
             // 
             // labelControl1
             // 
             labelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            labelControl1.Location = new Point(3, 90);
+            labelControl1.Location = new Point(3, 125);
             labelControl1.Name = "labelControl1";
             labelControl1.Size = new Size(94, 29);
             labelControl1.TabIndex = 8;
@@ -127,9 +127,9 @@ namespace CsvTool
             // lbloutput
             // 
             lbloutput.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lbloutput.Location = new Point(3, 24);
+            lbloutput.Location = new Point(3, 32);
             lbloutput.Name = "lbloutput";
-            lbloutput.Size = new Size(91, 57);
+            lbloutput.Size = new Size(126, 87);
             lbloutput.TabIndex = 3;
             lbloutput.Text = "What should the\r\noutput be like? :";
             toolTip1.SetToolTip(lbloutput, "What should the parsed data in the csv file be converted to?");
@@ -138,10 +138,10 @@ namespace CsvTool
             // 
             chlistOutput.BorderStyle = BorderStyle.FixedSingle;
             chlistOutput.FormattingEnabled = true;
-            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command" });
-            chlistOutput.Location = new Point(140, 24);
+            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command", "Custom" });
+            chlistOutput.Location = new Point(140, 32);
             chlistOutput.Name = "chlistOutput";
-            chlistOutput.Size = new Size(137, 50);
+            chlistOutput.Size = new Size(137, 82);
             chlistOutput.TabIndex = 2;
             toolTip1.SetToolTip(chlistOutput, "What should the parsed data in the csv file be converted to?");
             chlistOutput.ItemCheck += chlistOutput_ItemCheck;
@@ -149,7 +149,7 @@ namespace CsvTool
             // lblExportPath
             // 
             lblExportPath.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblExportPath.Location = new Point(3, 125);
+            lblExportPath.Location = new Point(3, 160);
             lblExportPath.Name = "lblExportPath";
             lblExportPath.Size = new Size(94, 28);
             lblExportPath.TabIndex = 5;
@@ -161,7 +161,7 @@ namespace CsvTool
             btnSelectPath.Appearance.Font = new Font("Tahoma", 9.75F, FontStyle.Bold);
             btnSelectPath.Appearance.Options.UseFont = true;
             btnSelectPath.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("btnSelectPath.ImageOptions.SvgImage");
-            btnSelectPath.Location = new Point(140, 125);
+            btnSelectPath.Location = new Point(140, 160);
             btnSelectPath.Name = "btnSelectPath";
             btnSelectPath.RightToLeft = RightToLeft.Yes;
             btnSelectPath.Size = new Size(137, 28);
@@ -172,7 +172,7 @@ namespace CsvTool
             // 
             // txtTableName
             // 
-            txtTableName.Location = new Point(140, 90);
+            txtTableName.Location = new Point(140, 125);
             txtTableName.Name = "txtTableName";
             txtTableName.Size = new Size(137, 20);
             txtTableName.TabIndex = 3;
@@ -184,7 +184,7 @@ namespace CsvTool
             BtnSave.Appearance.Options.UseFont = true;
             BtnSave.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSave.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSave.ImageOptions.SvgImage");
-            BtnSave.Location = new Point(20, 350);
+            BtnSave.Location = new Point(20, 391);
             BtnSave.Name = "BtnSave";
             BtnSave.RightToLeft = RightToLeft.Yes;
             BtnSave.Size = new Size(305, 32);
@@ -196,7 +196,7 @@ namespace CsvTool
             // txtExportPath
             // 
             txtExportPath.Enabled = false;
-            txtExportPath.Location = new Point(23, 229);
+            txtExportPath.Location = new Point(23, 270);
             txtExportPath.Name = "txtExportPath";
             txtExportPath.Size = new Size(302, 20);
             txtExportPath.TabIndex = 10;
@@ -204,7 +204,7 @@ namespace CsvTool
             // labelControl2
             // 
             labelControl2.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            labelControl2.Location = new Point(23, 203);
+            labelControl2.Location = new Point(23, 244);
             labelControl2.Name = "labelControl2";
             labelControl2.Size = new Size(94, 20);
             labelControl2.TabIndex = 11;
@@ -217,7 +217,7 @@ namespace CsvTool
             BtnSetColNames.Appearance.Options.UseFont = true;
             BtnSetColNames.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
             BtnSetColNames.ImageOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("BtnSetColNames.ImageOptions.SvgImage");
-            BtnSetColNames.Location = new Point(20, 310);
+            BtnSetColNames.Location = new Point(20, 351);
             BtnSetColNames.Name = "BtnSetColNames";
             BtnSetColNames.RightToLeft = RightToLeft.Yes;
             BtnSetColNames.Size = new Size(305, 32);
@@ -231,7 +231,7 @@ namespace CsvTool
             btnBack.Appearance.Options.UseFont = true;
             btnBack.ImageOptions.Image = (Image)resources.GetObject("btnBack.ImageOptions.Image");
             btnBack.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            btnBack.Location = new Point(225, 394);
+            btnBack.Location = new Point(225, 435);
             btnBack.Name = "btnBack";
             btnBack.RightToLeft = RightToLeft.Yes;
             btnBack.Size = new Size(100, 32);
@@ -243,7 +243,7 @@ namespace CsvTool
             // ChboxAddId
             // 
             ChboxAddId.Enabled = false;
-            ChboxAddId.Location = new Point(20, 257);
+            ChboxAddId.Location = new Point(20, 298);
             ChboxAddId.Name = "ChboxAddId";
             ChboxAddId.Properties.Caption = "Add Id? (Mongo Only)";
             ChboxAddId.Size = new Size(132, 20);
@@ -270,7 +270,7 @@ namespace CsvTool
             // ChboxAvailableOnFirstRow
             // 
             ChboxAvailableOnFirstRow.EditValue = true;
-            ChboxAvailableOnFirstRow.Location = new Point(20, 284);
+            ChboxAvailableOnFirstRow.Location = new Point(20, 325);
             ChboxAvailableOnFirstRow.Name = "ChboxAvailableOnFirstRow";
             ChboxAvailableOnFirstRow.Properties.Caption = "Are column names available in the first row?";
             ChboxAvailableOnFirstRow.Size = new Size(305, 20);
@@ -280,7 +280,7 @@ namespace CsvTool
             // LblRestartInfo
             // 
             LblRestartInfo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            LblRestartInfo.Location = new Point(20, 388);
+            LblRestartInfo.Location = new Point(20, 429);
             LblRestartInfo.Name = "LblRestartInfo";
             LblRestartInfo.Size = new Size(199, 46);
             LblRestartInfo.TabIndex = 15;
@@ -290,7 +290,7 @@ namespace CsvTool
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(350, 450);
+            ClientSize = new Size(350, 522);
             Controls.Add(LblRestartInfo);
             Controls.Add(ChboxAvailableOnFirstRow);
             Controls.Add(labelControl3);

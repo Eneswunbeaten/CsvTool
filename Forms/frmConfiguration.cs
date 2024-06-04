@@ -1,4 +1,5 @@
-﻿using DevExpress.DirectX.Common.Direct2D;
+﻿using CsvTool.Forms;
+using DevExpress.DirectX.Common.Direct2D;
 using DevExpress.XtraEditors;
 using DevExpress.XtraLayout.Painting;
 using DevExpress.XtraSplashScreen;
@@ -35,7 +36,6 @@ namespace CsvTool
             headers =null;
             dataList.Clear();
             valtypes.Clear();
-
         }
         private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
         List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
@@ -64,7 +64,6 @@ namespace CsvTool
                             {
                                 string trimmedValue = cols[i].Trim('\"');
                                 rowData.Add(headers[i].Trim(), trimmedValue.Trim());
-                                // Veri tipini güncelle
                                 Type valueType = DetermineValueType(trimmedValue);
                                 if (!valtypes.ContainsKey(headers[i].Trim()))
                                 {
@@ -314,6 +313,16 @@ namespace CsvTool
                 }
             }
         }
+        void CustomSelected()
+        {
+            StartWork();
+            LoadHeaders();
+            frmCustomPrinting frm=new frmCustomPrinting(headers,txtExportPath.Text,txtTableName.Text,dataList);
+            frm.Show();
+            EndWork();
+
+            
+        }
         #endregion
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
@@ -367,7 +376,11 @@ namespace CsvTool
                 {
                     MongoSelected();
                 }
-
+                else if (selectedItem.Contains("Custom"))
+                {
+                    CustomSelected();
+                    return;
+                }
                 selectedIndices.Add(index);
             }
             EndWork();

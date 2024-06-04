@@ -110,6 +110,7 @@
             Controls.Add(TxtNewColNames);
             IconOptions.SvgImage = (DevExpress.Utils.Svg.SvgImage)resources.GetObject("frmNewColNames.IconOptions.SvgImage");
             Name = "frmNewColNames";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "New Column Names";
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).EndInit();
             ResumeLayout(false);
