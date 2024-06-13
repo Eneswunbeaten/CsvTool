@@ -1,20 +1,11 @@
 ﻿using CsvTool.Forms;
-using DevExpress.DirectX.Common.Direct2D;
-using DevExpress.XtraEditors;
-using DevExpress.XtraLayout.Painting;
+using DevExpress.Mvvm.Native;
 using DevExpress.XtraSplashScreen;
-using DevExpress.XtraWaitForm;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using MongoDB.Bson.IO;
 using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace CsvTool
 {
@@ -33,7 +24,7 @@ namespace CsvTool
         void Refresh()
         {
             _csvPath = filePath;
-            headers =null;
+            headers = null;
             dataList.Clear();
             valtypes.Clear();
         }
@@ -49,8 +40,7 @@ namespace CsvTool
                 {
                     if (ChboxAvailableOnFirstRow.CheckState == CheckState.Checked)
                     {
-                        headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-
+                        headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(_ => _.Trim('\"')).ToArray();
                     }
                     string line;
                     while ((line = sr.ReadLine()) != null)
@@ -100,7 +90,7 @@ namespace CsvTool
                 char.TryParse(txtDelimiter.Text, out delimiter);
                 using (StreamReader sr = new StreamReader(filePath))
                 {
-                    headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+                    headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(h => h.Trim('\"')).ToArray();
                 }
             }
             catch (Exception ex)
@@ -109,7 +99,49 @@ namespace CsvTool
                 Application.Exit();
             }
         }
+        void RemoveHeader(string headerToRemove)
+        {
+            if (headers != null && headers.Length > 0)
+            {
+                int Index = Array.IndexOf(headers, headerToRemove);
+                if (Index >= 0)
+                {
+                    headers = headers.Where((h, i) => i != Index).ToArray();
+                }
+                foreach (var rowData in dataList)
+                {
+                    rowData.Remove(headerToRemove);
+                }
+                if (valtypes.ContainsKey(headerToRemove))
+                {
+                    valtypes.Remove(headerToRemove);
+                }
+            }
+        }
+        public string[] InsertAtBeginning()
+        {
+            var Idname = "id";
+            if (ChboxAddId.CheckState == CheckState.Checked)
+            {
+                if (!string.IsNullOrEmpty(TxtIdName.Text))
+                {
+                    Idname = TxtIdName.Text;   
+                }
+            }
+            string[] newArray = new string[headers.Length + 1];
+            newArray[0] = Idname;
 
+            for (int i = 0; i < headers.Length; i++)
+            {
+                newArray[i + 1] = headers[i];
+            }
+            foreach (var rowData in dataList)
+            {
+                rowData[Idname] = ObjectId.GenerateNewId().ToString();
+            }
+
+            return newArray;
+        }
         public static void StartWork()
         {
             SplashScreenManager.ShowForm(Form.ActiveForm, typeof(frmLoad), true, true, false);
@@ -138,7 +170,6 @@ namespace CsvTool
         }
         private Type DetermineValueType(string value)
         {
-
             if (int.TryParse(value, out _))
                 return typeof(int);
 
@@ -248,82 +279,67 @@ namespace CsvTool
             using (StreamWriter writer = new StreamWriter(newModelDataPath))
             {
                 writer.WriteLine($"db.getCollection(\"{txtTableName.Text}\").insert([");
-                if (ChboxAddId.CheckState == CheckState.Checked)
-                {
-                    bool isFirstRow = true;
-                    foreach (var rowData in dataList)
-                    {
-                        if (isFirstRow)
-                        {
-                            writer.Write("{ ");
-                            isFirstRow = false;
-                        }
-                        else
-                        {
-                            writer.Write(", \n{ ");
-                        }
-                        int i = 0;
-                        writer.Write("id:" + $"\"{ObjectId.GenerateNewId()}\"" + ",");
 
-                        foreach (var header in headers)
-                        {
-                            i++;
-                            string value = rowData.ContainsKey(header) ? rowData[header] : "null";
-                            writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
-                            if (i < headers.Length)
-                            {
-                                writer.Write(", ");
-                            }
-                        }
-                        writer.Write(" }");
+                if (headers == null || headers.Length == 0)
+                {
+                    MessageBox.Show("Headers are empty. Please check the CSV file and delimiter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (dataList == null || dataList.Count == 0)
+                {
+                    MessageBox.Show("Data list is empty. Please check the CSV file and delimiter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                bool isFirstRow = true;
+                foreach (var rowData in dataList)
+                {
+                    if (isFirstRow)
+                    {
+                        writer.Write("{ ");
+                        isFirstRow = false;
+                    }
+                    else
+                    {
+                        writer.Write(", \n{ ");
                     }
 
-                    writer.WriteLine("]);");
-                }
-                else
-                {
-                    bool isFirstRow1 = true;
-                    foreach (var rowData in dataList)
+                    //if (ChboxAddId.CheckState == CheckState.Checked)
+                    //{
+                    //    writer.Write($"{(string.IsNullOrEmpty(TxtIdName.Text) ? "_id" : TxtIdName.Text)}: \"{ObjectId.GenerateNewId()}\", ");
+                    //}
+
+                    int i = 0;
+                    foreach (var header in headers)
                     {
-                        if (isFirstRow1)
+                        i++;
+                        string value = rowData.ContainsKey(header) ? rowData[header] : "null";
+                        writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\\\"")}\"");
+                        if (i < headers.Length)
                         {
-                            writer.Write("{ ");
-                            isFirstRow1 = false;
+                            writer.Write(", ");
                         }
-                        else
-                        {
-                            writer.Write(", \n{ ");
-                        }
-
-                        int i = 0;
-                        foreach (var header in headers)
-                        {
-                            i++;
-                            string value = rowData.ContainsKey(header) ? rowData[header] : "null";
-                            writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\"\"")}\"");
-                            if (i < headers.Length)
-                            {
-                                writer.Write(", ");
-                            }
-                        }
-                        writer.Write(" }");
                     }
-
-                    writer.WriteLine("]);");
+                    writer.Write(" }");
                 }
+
+                writer.WriteLine("]);");
             }
         }
+
         void CustomSelected()
         {
             StartWork();
-            LoadHeaders();
-            frmCustomPrinting frm=new frmCustomPrinting(headers,txtExportPath.Text,txtTableName.Text,dataList);
+            //IdColumnInserting();
+            //LoadHeaders();
+            headers = InsertAtBeginning();
+            frmCustomPrinting frm = new frmCustomPrinting(headers, txtExportPath.Text, txtTableName.Text, dataList);
             frm.Show();
             EndWork();
-
-            
         }
+
         #endregion
+
         private void btnSelectPath_Click(object sender, EventArgs e)
         {
             folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
@@ -358,8 +374,11 @@ namespace CsvTool
                 txtExportPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
             #endregion
+
             StartWork();
             LoadCsvData();
+            RemoveHeader("inCode");
+            headers=InsertAtBeginning();
             foreach (int index in chlistOutput.CheckedIndices)
             {
                 string selectedItem = chlistOutput.Items[index].ToString();
@@ -404,19 +423,18 @@ namespace CsvTool
 
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
-            ChboxAvailableOnFirstRow.CheckState = CheckState.Unchecked;
             StartWork();
-            LoadHeaders();
+            headers = InsertAtBeginning();
+            RemoveHeader("inCode");
             EndWork();
-            int headercount = headers.Count();
-            frmNewColNames frm = new frmNewColNames(headercount);
+            int headerCount = headers.Count();
+            frmNewColNames frm = new frmNewColNames(headerCount, headers);
             frm.Visible = false;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 headers = frm.NewCols;
                 return;
             }
-            frm.Show();
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -429,6 +447,7 @@ namespace CsvTool
         {
             Application.Exit();
         }
+
         private void chlistOutput_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             bool isMongoSelected = true;
@@ -441,6 +460,14 @@ namespace CsvTool
                 }
             }
             ChboxAddId.Enabled = isMongoSelected;
+        }
+
+        private void ChboxAddId_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ChboxAddId.CheckState == CheckState.Checked)
+                TxtIdName.Enabled = true;
+            else
+                TxtIdName.Enabled = false;
         }
     }
 }

@@ -14,9 +14,11 @@ namespace CsvTool
     public partial class frmNewColNames : DevExpress.XtraEditors.XtraForm
     {
         int _count;
-        public frmNewColNames(int count)
+        string[] _headers;
+        public frmNewColNames(int count,string[] headers)
         {
             _count = count;
+            _headers = headers;
             InitializeComponent();
             LblColCount.Text += _count.ToString();
         }
@@ -24,9 +26,9 @@ namespace CsvTool
         public string[] NewCols { get; set; }
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            if(char.TryParse(txtDelimiter.Text, out delimiter))
+            if (char.TryParse(txtDelimiter.Text, out delimiter))
             {
-                NewCols = TxtNewColNames.Text.Split(delimiter,StringSplitOptions.RemoveEmptyEntries);
+                NewCols = TxtNewColNames.Text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                 NewCols = NewCols.Take(_count).ToArray();
                 DialogResult = DialogResult.OK;
                 Close();
@@ -50,6 +52,37 @@ namespace CsvTool
                 return;
             }
 
+        }
+
+        private void frmNewColNames_Load(object sender, EventArgs e)
+        {
+            DgwHeaders.Columns.Add("Headers", "Headers");
+            foreach (var item in _headers)
+            {
+                DgwHeaders.Rows.Add(item);
+            }
+        }
+
+        private void DgwHeaders_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && DgwHeaders.SelectedRows.Count > 0)
+            {
+                foreach (DataGridViewRow row in DgwHeaders.SelectedRows)
+                {
+                    if (!row.IsNewRow)
+                    {
+                        DgwHeaders.Rows.Remove(row);
+                    }
+                }
+            }
+        }
+
+        private void DgwHeaders_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DgwHeaders.Rows.RemoveAt(e.RowIndex);
+            }
         }
     }
 }

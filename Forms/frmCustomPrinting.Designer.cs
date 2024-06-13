@@ -156,7 +156,7 @@
             labelControl1.Name = "labelControl1";
             labelControl1.Size = new Size(131, 30);
             labelControl1.TabIndex = 31;
-            labelControl1.Text = "Delimiter";
+            labelControl1.Text = "New Delimiter";
             // 
             // ClBoxDelimiter
             // 

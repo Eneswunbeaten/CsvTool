@@ -32,16 +32,18 @@ namespace CsvTool
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmConfiguration));
+            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
             lblrowcount = new Label();
             txtDelimiter = new DevExpress.XtraEditors.TextEdit();
             lbldelimiter = new DevExpress.XtraEditors.LabelControl();
             Layout = new TableLayoutPanel();
             labelControl1 = new DevExpress.XtraEditors.LabelControl();
             lbloutput = new DevExpress.XtraEditors.LabelControl();
-            chlistOutput = new CheckedListBox();
             lblExportPath = new DevExpress.XtraEditors.LabelControl();
             btnSelectPath = new DevExpress.XtraEditors.SimpleButton();
             txtTableName = new DevExpress.XtraEditors.TextEdit();
+            chlistOutput = new CheckedListBox();
             BtnSave = new DevExpress.XtraEditors.SimpleButton();
             txtExportPath = new DevExpress.XtraEditors.TextEdit();
             labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -51,6 +53,7 @@ namespace CsvTool
             toolTip1 = new ToolTip(components);
             labelControl3 = new DevExpress.XtraEditors.LabelControl();
             ChboxAvailableOnFirstRow = new DevExpress.XtraEditors.CheckEdit();
+            TxtIdName = new DevExpress.XtraEditors.TextEdit();
             LblRestartInfo = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).BeginInit();
             Layout.SuspendLayout();
@@ -58,12 +61,13 @@ namespace CsvTool
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAddId.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAvailableOnFirstRow.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)TxtIdName.Properties).BeginInit();
             SuspendLayout();
             // 
             // lblrowcount
             // 
             lblrowcount.AutoSize = true;
-            lblrowcount.Location = new Point(24, 386);
+            lblrowcount.Location = new Point(20, 478);
             lblrowcount.Name = "lblrowcount";
             lblrowcount.Size = new Size(0, 13);
             lblrowcount.TabIndex = 0;
@@ -134,18 +138,6 @@ namespace CsvTool
             lbloutput.Text = "What should the\r\noutput be like? :";
             toolTip1.SetToolTip(lbloutput, "What should the parsed data in the csv file be converted to?");
             // 
-            // chlistOutput
-            // 
-            chlistOutput.BorderStyle = BorderStyle.FixedSingle;
-            chlistOutput.FormattingEnabled = true;
-            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command", "Custom" });
-            chlistOutput.Location = new Point(140, 32);
-            chlistOutput.Name = "chlistOutput";
-            chlistOutput.Size = new Size(137, 82);
-            chlistOutput.TabIndex = 2;
-            toolTip1.SetToolTip(chlistOutput, "What should the parsed data in the csv file be converted to?");
-            chlistOutput.ItemCheck += chlistOutput_ItemCheck;
-            // 
             // lblExportPath
             // 
             lblExportPath.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -177,6 +169,18 @@ namespace CsvTool
             txtTableName.Size = new Size(137, 20);
             txtTableName.TabIndex = 3;
             toolTip1.SetToolTip(txtTableName, "Enter the table name. (This table name will be in your file name.)");
+            // 
+            // chlistOutput
+            // 
+            chlistOutput.BorderStyle = BorderStyle.FixedSingle;
+            chlistOutput.FormattingEnabled = true;
+            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command", "Custom" });
+            chlistOutput.Location = new Point(140, 32);
+            chlistOutput.Name = "chlistOutput";
+            chlistOutput.Size = new Size(137, 82);
+            chlistOutput.TabIndex = 2;
+            toolTip1.SetToolTip(chlistOutput, "What should the parsed data in the csv file be converted to?");
+            chlistOutput.ItemCheck += chlistOutput_ItemCheck;
             // 
             // BtnSave
             // 
@@ -249,6 +253,7 @@ namespace CsvTool
             ChboxAddId.Size = new Size(132, 20);
             ChboxAddId.TabIndex = 12;
             toolTip1.SetToolTip(ChboxAddId, "Should the Id column be added when converting the csv file to Mongo Insert Command?");
+            ChboxAddId.CheckedChanged += ChboxAddId_CheckedChanged;
             // 
             // toolTip1
             // 
@@ -277,6 +282,19 @@ namespace CsvTool
             ChboxAvailableOnFirstRow.TabIndex = 14;
             toolTip1.SetToolTip(ChboxAvailableOnFirstRow, "Should the Id column be added when converting the csv file to Mongo Insert Command?");
             // 
+            // TxtIdName
+            // 
+            TxtIdName.Enabled = false;
+            TxtIdName.Location = new Point(148, 296);
+            TxtIdName.Name = "TxtIdName";
+            TxtIdName.Size = new Size(178, 20);
+            toolTipItem1.Text = "New Id Column Name";
+            superToolTip1.Items.Add(toolTipItem1);
+            TxtIdName.SuperTip = superToolTip1;
+            TxtIdName.TabIndex = 16;
+            TxtIdName.Tag = "";
+            toolTip1.SetToolTip(TxtIdName, "New Id Column name");
+            // 
             // LblRestartInfo
             // 
             LblRestartInfo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -291,6 +309,7 @@ namespace CsvTool
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(350, 522);
+            Controls.Add(TxtIdName);
             Controls.Add(LblRestartInfo);
             Controls.Add(ChboxAvailableOnFirstRow);
             Controls.Add(labelControl3);
@@ -317,6 +336,7 @@ namespace CsvTool
             ((System.ComponentModel.ISupportInitialize)txtExportPath.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAddId.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)ChboxAvailableOnFirstRow.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)TxtIdName.Properties).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -343,5 +363,6 @@ namespace CsvTool
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.CheckEdit ChboxAvailableOnFirstRow;
         private DevExpress.XtraEditors.LabelControl LblRestartInfo;
+        private DevExpress.XtraEditors.TextEdit TxtIdName;
     }
 }
