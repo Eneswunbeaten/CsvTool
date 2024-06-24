@@ -96,7 +96,6 @@ namespace CsvTool
             catch (Exception ex)
             {
                 MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
             }
         }
         void RemoveHeader(string headerToRemove)
@@ -142,6 +141,7 @@ namespace CsvTool
 
             return newArray;
         }
+
         public static void StartWork()
         {
             SplashScreenManager.ShowForm(Form.ActiveForm, typeof(frmLoad), true, true, false);
@@ -377,8 +377,9 @@ namespace CsvTool
 
             StartWork();
             LoadCsvData();
-            RemoveHeader("inCode");
-            headers=InsertAtBeginning();
+            //RemoveHeader("inCode");
+
+            LoadHeaders();
             foreach (int index in chlistOutput.CheckedIndices)
             {
                 string selectedItem = chlistOutput.Items[index].ToString();
@@ -393,6 +394,8 @@ namespace CsvTool
                 }
                 else if (selectedItem.Contains("Mongo"))
                 {
+                    if (ChboxAddId.CheckState == CheckState.Checked)
+                        headers = InsertAtBeginning();
                     MongoSelected();
                 }
                 else if (selectedItem.Contains("Custom"))

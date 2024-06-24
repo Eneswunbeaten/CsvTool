@@ -130,7 +130,7 @@ namespace CsvTool
             DgwHeaders.MultiSelect = false;
             DgwHeaders.Name = "DgwHeaders";
             DgwHeaders.ReadOnly = true;
-            DgwHeaders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            DgwHeaders.SelectionMode = DataGridViewSelectionMode.CellSelect;
             DgwHeaders.Size = new Size(521, 74);
             DgwHeaders.TabIndex = 12;
             DgwHeaders.CellDoubleClick += DgwHeaders_CellDoubleClick;
