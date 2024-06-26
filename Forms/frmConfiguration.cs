@@ -42,7 +42,8 @@ namespace CsvTool
                 {
                     if (ChboxAvailableOnFirstRow.CheckState == CheckState.Checked)
                     {
-                        headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(_ => _.Trim('\"')).ToArray();
+                        if (IsNewCol == false)
+                            headers = sr.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Select(_ => _.Trim('\"')).ToArray();
                     }
                     string line;
                     while ((line = sr.ReadLine()) != null)
@@ -125,9 +126,7 @@ namespace CsvTool
             if (ChboxAddId.CheckState == CheckState.Checked)
             {
                 if (!string.IsNullOrEmpty(TxtIdName.Text))
-                {
-                    Idname = TxtIdName.Text;   
-                }
+                    Idname = TxtIdName.Text;
             }
             string[] newArray = new string[headers.Length + 1];
             newArray[0] = Idname;
@@ -263,7 +262,7 @@ namespace CsvTool
                         string value = rowData.ContainsKey(header) ? rowData[header] : "NULL";
                         writer.Write($"'{value.Replace("'", "''")}'");
                         if (i < headers.Length)
-                           writer.Write(", ");
+                            writer.Write(", ");
                     }
                     writer.Write(")");
                 }
@@ -370,7 +369,7 @@ namespace CsvTool
             StartWork();
             LoadCsvData();
             //RemoveHeader("inCode");
-            if(IsNewCol==false)
+            if (IsNewCol == false)
                 LoadHeaders();
             foreach (int index in chlistOutput.CheckedIndices)
             {
@@ -414,7 +413,7 @@ namespace CsvTool
                     break;
             }
         }
-        
+
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
             StartWork();
@@ -424,13 +423,13 @@ namespace CsvTool
             else
                 LoadHeaders();
             //RemoveHeader("inCode");
+            frmNewColNames frm = new frmNewColNames(headers);
             EndWork();
-            frmNewColNames frm = new frmNewColNames(headers.Count(), headers);
             frm.Visible = false;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 IsNewCol = true;
-                headers = frm.NewCols;
+                headers = (frm.NewCols.Count() > 0) ? frm.NewCols : throw new Exception("Yeni Columnlar Boş geliyor.");
                 return;
             }
         }

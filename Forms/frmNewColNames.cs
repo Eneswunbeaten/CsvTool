@@ -13,13 +13,13 @@ namespace CsvTool
 {
     public partial class frmNewColNames : DevExpress.XtraEditors.XtraForm
     {
-        int _count;
         string[] _headers;
-        public frmNewColNames(int count,string[] headers)
+        int _count;
+        public frmNewColNames(string[] headers)
         {
-            _count = count;
             _headers = headers;
             InitializeComponent();
+            int _count= _headers.Count();
             LblColCount.Text += _count.ToString();
         }
         char delimiter;
@@ -28,8 +28,11 @@ namespace CsvTool
         {
             if (char.TryParse(txtDelimiter.Text, out delimiter))
             {
-                NewCols = TxtNewColNames.Text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-                NewCols = NewCols.Take(_count).ToArray();
+                NewCols = TxtNewColNames.Text
+                    .Split(delimiter, StringSplitOptions.RemoveEmptyEntries)
+                    .Take(_count)
+                    .ToArray();
+
                 DialogResult = DialogResult.OK;
                 Close();
             }

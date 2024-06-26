@@ -56,6 +56,7 @@
             Name = "frmCsvWaiting";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Csv Waiting...";
+            Load += frmCsvWaiting_Load;
             DragDrop += frmCsvWaiting_DragDrop;
             DragEnter += frmCsvWaiting_DragEnter;
             ResumeLayout(false);
