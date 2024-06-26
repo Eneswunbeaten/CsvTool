@@ -21,6 +21,11 @@ namespace CsvTool
         private static string[] headers;
         string[] cols;
         char delimiter;
+        bool IsNewCol;
+
+        private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+        List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
+        Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
         void Refresh()
         {
             _csvPath = filePath;
@@ -28,9 +33,6 @@ namespace CsvTool
             dataList.Clear();
             valtypes.Clear();
         }
-        private FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-        List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
-        Dictionary<string, Type> valtypes = new Dictionary<string, Type>();
         void LoadCsvData()
         {
             try
@@ -252,9 +254,7 @@ namespace CsvTool
                         isFirstRow = false;
                     }
                     else
-                    {
                         writer.Write(",\n(");
-                    }
 
                     i = 0;
                     foreach (var header in headers)
@@ -263,13 +263,10 @@ namespace CsvTool
                         string value = rowData.ContainsKey(header) ? rowData[header] : "NULL";
                         writer.Write($"'{value.Replace("'", "''")}'");
                         if (i < headers.Length)
-                        {
-                            writer.Write(", ");
-                        }
+                           writer.Write(", ");
                     }
                     writer.Write(")");
                 }
-
                 writer.WriteLine(";");
             }
         }
@@ -316,9 +313,7 @@ namespace CsvTool
                         string value = rowData.ContainsKey(header) ? rowData[header] : "null";
                         writer.Write($"\"{header.Trim()}\": \"{value.Replace("\"", "\\\"")}\"");
                         if (i < headers.Length)
-                        {
                             writer.Write(", ");
-                        }
                     }
                     writer.Write(" }");
                 }
@@ -344,9 +339,7 @@ namespace CsvTool
         {
             folderBrowserDialog.SelectedPath = Path.GetDirectoryName(filePath);
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
                 txtExportPath.Text = folderBrowserDialog.SelectedPath;
-            }
         }
 
         List<int> selectedIndices = new List<int>();
@@ -374,12 +367,11 @@ namespace CsvTool
                 txtExportPath.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
             #endregion
-
             StartWork();
             LoadCsvData();
             //RemoveHeader("inCode");
-
-            LoadHeaders();
+            if(IsNewCol==false)
+                LoadHeaders();
             foreach (int index in chlistOutput.CheckedIndices)
             {
                 string selectedItem = chlistOutput.Items[index].ToString();
@@ -408,7 +400,6 @@ namespace CsvTool
             EndWork();
             MessageBox.Show($"File Saved To \n{txtExportPath.Text}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult dr = MessageBox.Show("Will you continue with the same file?\n(Closes the program when the Cancel button is clicked.)", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-
             switch (dr)
             {
                 case DialogResult.Yes:
@@ -423,18 +414,22 @@ namespace CsvTool
                     break;
             }
         }
-
+        
         private void BtnSetColNames_Click(object sender, EventArgs e)
         {
             StartWork();
-            headers = InsertAtBeginning();
-            RemoveHeader("inCode");
+            LoadHeaders();
+            if (ChboxAddId.CheckState == CheckState.Checked)
+                headers = InsertAtBeginning();
+            else
+                LoadHeaders();
+            //RemoveHeader("inCode");
             EndWork();
-            int headerCount = headers.Count();
-            frmNewColNames frm = new frmNewColNames(headerCount, headers);
+            frmNewColNames frm = new frmNewColNames(headers.Count(), headers);
             frm.Visible = false;
             if (frm.ShowDialog() == DialogResult.OK)
             {
+                IsNewCol = true;
                 headers = frm.NewCols;
                 return;
             }

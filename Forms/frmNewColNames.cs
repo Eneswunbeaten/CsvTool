@@ -23,7 +23,7 @@ namespace CsvTool
             LblColCount.Text += _count.ToString();
         }
         char delimiter;
-        public string[] NewCols { get; set; }
+        public string[] NewCols;
         private void BtnSave_Click(object sender, EventArgs e)
         {
             if (char.TryParse(txtDelimiter.Text, out delimiter))
