@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpress.Win.Design" Version="21.2.6" />
+    <PackageReference Include="ExcelLibrary" Version="1.2011.7.31" />
+    <PackageReference Include="FreeSpire.XLS" Version="14.2.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.25.0" />
   </ItemGroup>
 

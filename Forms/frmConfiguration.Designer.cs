@@ -174,7 +174,7 @@ namespace CsvTool
             // 
             chlistOutput.BorderStyle = BorderStyle.FixedSingle;
             chlistOutput.FormattingEnabled = true;
-            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Command", "Sql Insert Command", "Custom" });
+            chlistOutput.Items.AddRange(new object[] { "C# Model Parser", "Mongo Insert Query", "Sql Insert Query", "Table", "Custom" });
             chlistOutput.Location = new Point(140, 32);
             chlistOutput.Name = "chlistOutput";
             chlistOutput.Size = new Size(137, 82);
@@ -329,6 +329,7 @@ namespace CsvTool
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Configuration";
             FormClosed += frmConfiguration_FormClosed;
+            Load += frmConfiguration_Load;
             ((System.ComponentModel.ISupportInitialize)txtDelimiter.Properties).EndInit();
             Layout.ResumeLayout(false);
             Layout.PerformLayout();

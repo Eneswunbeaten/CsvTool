@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.Mvvm.POCO;
+using DevExpress.XtraEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,9 @@ namespace CsvTool
     {
         string[] _headers;
         int _count;
+        char delimiter;
+        public string[] NewCols;
+        public List<int> RIndex;
         public frmNewColNames(string[] headers)
         {
             _headers = headers;
@@ -22,17 +26,12 @@ namespace CsvTool
             int _count= _headers.Count();
             LblColCount.Text += _count.ToString();
         }
-        char delimiter;
-        public string[] NewCols;
         private void BtnSave_Click(object sender, EventArgs e)
         {
             if (char.TryParse(txtDelimiter.Text, out delimiter))
             {
-                NewCols = TxtNewColNames.Text
-                    .Split(delimiter, StringSplitOptions.RemoveEmptyEntries)
-                    .Take(_count)
-                    .ToArray();
-
+                _count= _headers.Count();
+                NewCols = TxtNewColNames.Text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).Take(_count).ToArray();
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -54,16 +53,13 @@ namespace CsvTool
                 MessageBox.Show("You have entered more column names than the number of columns in the CSV file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
         }
 
         private void frmNewColNames_Load(object sender, EventArgs e)
         {
             DgwHeaders.Columns.Add("Headers", "Headers");
             foreach (var item in _headers)
-            {
                 DgwHeaders.Rows.Add(item);
-            }
         }
 
         private void DgwHeaders_KeyDown(object sender, KeyEventArgs e)
@@ -75,6 +71,7 @@ namespace CsvTool
                     if (!row.IsNewRow)
                     {
                         DgwHeaders.Rows.Remove(row);
+                        RIndex.Add(row.Index);
                     }
                 }
             }
@@ -85,6 +82,7 @@ namespace CsvTool
             if (e.RowIndex >= 0)
             {
                 DgwHeaders.Rows.RemoveAt(e.RowIndex);
+                //RIndex.Add(e.RowIndex);
             }
         }
     }

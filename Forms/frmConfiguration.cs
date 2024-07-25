@@ -1,12 +1,13 @@
 ﻿using CsvTool.Forms;
 using DevExpress.Mvvm.Native;
 using DevExpress.XtraSplashScreen;
+using DevExpress.XtraSpreadsheet.Commands.Internal;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using System.Data;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
-
+using Excel = Microsoft.Office.Interop.Excel;
 namespace CsvTool
 {
     public partial class frmConfiguration : DevExpress.XtraEditors.XtraForm
@@ -69,7 +70,7 @@ namespace CsvTool
                             }
                             else
                             {
-                                rowData.Add(headers[i].Trim(), "");
+                                rowData.Add(headers[i].Trim(), string.Empty);
                             }
                         }
 
@@ -101,25 +102,44 @@ namespace CsvTool
                 MessageBox.Show("An Error Occurred. Error Message:" + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        void RemoveHeader(string headerToRemove)
+        void RemoveHeader(int index)
         {
             if (headers != null && headers.Length > 0)
             {
-                int Index = Array.IndexOf(headers, headerToRemove);
-                if (Index >= 0)
+                var item = headers[index];
+                if (index >= 0)
                 {
-                    headers = headers.Where((h, i) => i != Index).ToArray();
+                    headers = headers.Where((h, i) => i != index).ToArray();
                 }
                 foreach (var rowData in dataList)
                 {
-                    rowData.Remove(headerToRemove);
+                    rowData.Remove(item);
                 }
-                if (valtypes.ContainsKey(headerToRemove))
+                if (valtypes.ContainsKey(item))
                 {
-                    valtypes.Remove(headerToRemove);
+                    valtypes.Remove(item);
                 }
             }
         }
+        //void RemoveHeaderByName(string headerToRemove)
+        //{
+        //    if (headers != null && headers.Length > 0)
+        //    {
+        //        int Index = Array.IndexOf(headers, headerToRemove);
+        //        if (Index >= 0)
+        //        {
+        //            headers = headers.Where((h, i) => i != Index).ToArray();
+        //        }
+        //        foreach (var rowData in dataList)
+        //        {
+        //            rowData.Remove(headerToRemove);
+        //        }
+        //        if (valtypes.ContainsKey(headerToRemove))
+        //        {
+        //            valtypes.Remove(headerToRemove);
+        //        }
+        //    }
+        //}
         public string[] InsertAtBeginning()
         {
             var Idname = "id";
@@ -171,10 +191,8 @@ namespace CsvTool
         }
         private Type DetermineValueType(string value)
         {
-            if (int.TryParse(value, out _))
-                return typeof(int);
 
-            else if (long.TryParse(value, out _))
+            if (long.TryParse(value, out _))
                 return typeof(long);
 
             else if (decimal.TryParse(value, out _))
@@ -185,6 +203,8 @@ namespace CsvTool
 
             else if (DateTime.TryParse(value, out _))
                 return typeof(DateTime);
+            else if (int.TryParse(value, out _))
+                return typeof(int);
             else
                 return typeof(string);
         }
@@ -320,7 +340,29 @@ namespace CsvTool
                 writer.WriteLine("]);");
             }
         }
+        void TableSelected()
+        {
+            string newModelDataPath = Path.Combine(txtExportPath.Text, $"{txtTableName.Text}_Table.xls");
+            DataTable table = new DataTable();
+            foreach (var header in headers)
+            {
+                table.Columns.Add(header);
+            }
 
+            // Satırları ekle
+            foreach (var rowData in dataList)
+            {
+                DataRow row = table.NewRow();
+                foreach (var header in headers)
+                {
+                    row[header] = rowData[header];
+                }
+                table.Rows.Add(row);
+            }
+            DataSet ds = new DataSet();
+            ds.Tables.Add(table);
+            ExcelLibrary.DataSetHelper.CreateWorkbook(newModelDataPath, ds);
+        }
         void CustomSelected()
         {
             StartWork();
@@ -345,7 +387,7 @@ namespace CsvTool
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            filePath = _csvPath;
+            //filePath = _csvPath;
             #region Possible Exception Control
             if (string.IsNullOrEmpty(txtDelimiter.Text))
             {
@@ -394,6 +436,11 @@ namespace CsvTool
                     CustomSelected();
                     return;
                 }
+                else if (selectedItem.Contains("Table"))
+                {
+                    TableSelected();
+                    return;
+                }
                 selectedIndices.Add(index);
             }
             EndWork();
@@ -422,14 +469,22 @@ namespace CsvTool
                 headers = InsertAtBeginning();
             else
                 LoadHeaders();
-            //RemoveHeader("inCode");
             frmNewColNames frm = new frmNewColNames(headers);
             EndWork();
             frm.Visible = false;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 IsNewCol = true;
-                headers = (frm.NewCols.Count() > 0) ? frm.NewCols : throw new Exception("Yeni Columnlar Boş geliyor.");
+                if (frm.RIndex.Count() > 0)
+                {
+                    if (frm.RIndex.Count() > 1)
+                        foreach (var i in frm.RIndex)
+                        {
+                            RemoveHeader(i);
+                        }
+                    RemoveHeader(frm.RIndex.FirstOrDefault());
+                }
+                headers = (frm.NewCols.Count() > 0) ? frm.NewCols : throw new Exception("New Columns are coming Empty.");
                 return;
             }
         }
@@ -466,5 +521,28 @@ namespace CsvTool
             else
                 TxtIdName.Enabled = false;
         }
+
+        private void frmConfiguration_Load(object sender, EventArgs e)
+        {
+            filePath = _csvPath;
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                if (string.IsNullOrEmpty(sr.ReadToEnd()))
+                {
+                   DialogResult dr= MessageBox.Show("The given csv file is empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    switch (dr)
+                    {
+                        case DialogResult.OK:
+                            Application.Exit();
+                            break;
+                        case DialogResult.Cancel:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
     }
 }
